@@ -25,4 +25,14 @@ for(let i=0; i<works.length;i++){
     galleryElement.appendChild(figureElement);
 }
 
+// creation of the filter button
+
+const filterZone = document.querySelector(".filterZone");
+for (let i=0; i<categories.length;i++){
+    const filterButton = document.createElement("button");
+    filterButton.innerText = categories[i].name;
+    filterButton.dataset.id = categories[i].id;
+    filterZone.appendChild(filterButton);
+}
+
 
