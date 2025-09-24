@@ -10,3 +10,7 @@
     text-decoration: underline;
     text-align: center;
 }
+
+#loginLink{
+    font-weight: bold;
+}
