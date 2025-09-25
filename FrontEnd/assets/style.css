@@ -125,7 +125,7 @@ nav img{
 	width: 22px;
 }
 
-a:hover{
+.nav-link:hover{
 	color: var(--title-color);
 }
 
