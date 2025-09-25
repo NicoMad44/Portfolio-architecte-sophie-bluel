@@ -13,7 +13,7 @@ console.log(works);
 
 diplayGallery(works);
 
-// creation of the filter button
+// creation of the filter button based on the API feed 
 
 const filterZone = document.querySelector(".filterZone");
 for (let i=0; i<categories.length;i++){
@@ -29,10 +29,15 @@ for (let i=0; i<categories.length;i++){
 const filterButtonsElement =document.querySelectorAll(".filterZone button");
 console.log(filterButtonsElement)
 
+/* loop to add event listner on all button - I use the dataset.id to know which button is clicked
+* When a button is clicked, I call the function to filter and display the works
+*/
 for(let i=0; i<filterButtonsElement.length; i++){
     filterButtonsElement[i].addEventListener("click",(event)=>{
         const category_id = filterButtonsElement[i].dataset.id;
+        
         filterAndDisplayWork(category_id);
+
     })
 }
 
