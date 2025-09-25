@@ -13,15 +13,43 @@ console.log(works);
 
 diplayGallery(works);
 
-// creation of the filter button based on the API feed 
+// Dynamically popylating the filter zone with
 
 const filterZone = document.querySelector(".filterZone");
-for (let i=0; i<categories.length;i++){
-    const filterButton = document.createElement("button");
-    filterButton.innerText = categories[i].name;
-    filterButton.dataset.id = categories[i].id;
-    filterZone.appendChild(filterButton);
-}
+
+// Methode One : creation of the filter button based on a new API feed to get the category data
+
+    for (let i=0; i<categories.length;i++){
+        const filterButton = document.createElement("button");
+        filterButton.innerText = categories[i].name;
+        filterButton.dataset.id = categories[i].id;
+        filterZone.appendChild(filterButton);
+    } 
+
+// Methode 2: Using the existing works data
+
+    /* const cat_ID = new Set();
+    const categoriesInWorks = new Set();
+
+    // loop to go througth all the works and add the category to the set - as a set, category will only be inserted once
+    for (let i =0; i<works.length; i++){
+        cat_ID.add(works[i].categoryId);
+        categoriesInWorks.add(works[i].category.name);
+        console.log(works[i].category.name)
+    }
+    console.log(cat_ID);
+
+    for (const catId of cat_ID) {
+        const filterButton = document.createElement("button");
+        filterButton.innerText = category.name;
+        filterButton.dataset.id = catId;
+        filterZone.appendChild(filterButton);
+    } */
+
+
+
+
+
 
 
 // Filter builder
