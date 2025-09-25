@@ -1,5 +1,3 @@
-let userId = 0;
-let userToken = "";
 const emailInputElement = document.getElementById("email");
 const submitButton = document.getElementById("submitButton");
 const form = document.querySelector("form");
@@ -38,10 +36,8 @@ async function login(email, password) {
   
     const data = await response.json();
     // "data" contains the token if login succeeded
-    userId = data.userId;
-    userToken = data.token;
     errorMessage.classList.add("hidden");
-    console.log(userId + " - " + userToken)
+    window.localStorage.setItem(data.userId, data.token);
     window.location.href = 'index.html';
   }
 

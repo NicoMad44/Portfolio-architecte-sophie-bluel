@@ -258,3 +258,8 @@ footer nav ul {
 	justify-content: flex-end;
 	padding: 2em;
 }
+
+
+.hidden{
+	display:flex;
+}

@@ -13,6 +13,16 @@ console.log(works);
 
 diplayGallery(works);
 
+// Check if user logedin and add the admin modification button if it is the case
+if (!window.localStorage.getItem("1")){
+    console.log("pas logger");
+} else {
+    diplayAdminTool();
+    console.log("logger");
+    console.log(window.localStorage.getItem("1"));
+}
+
+
 // Dynamically popylating the filter zone with
 
 const filterZone = document.querySelector(".filterZone");
@@ -45,11 +55,6 @@ const filterZone = document.querySelector(".filterZone");
         filterButton.dataset.id = catId;
         filterZone.appendChild(filterButton);
     } */
-
-
-
-
-
 
 
 // Filter builder
@@ -111,3 +116,12 @@ function filterAndDisplayWork(cat_id){
     }
 }
 
+/********function displayAdminTool()
+ * to diplay the modification button that will allow the modal to be displayed
+ * this function is called only if the user is logged in
+ **************************************/
+function displayAdminTool(){
+    const portfolio_titleZone = document.getElementById("portfolio-titleZone");
+    
+
+}
