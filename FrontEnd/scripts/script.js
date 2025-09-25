@@ -17,7 +17,7 @@ diplayGallery(works);
 if (!window.localStorage.getItem("1")){
     console.log("pas logger");
 } else {
-    diplayAdminTool();
+    displayEditButton();
     console.log("logger");
     console.log(window.localStorage.getItem("1"));
 }
@@ -116,12 +116,11 @@ function filterAndDisplayWork(cat_id){
     }
 }
 
-/********function displayAdminTool()
+/********function displayEditButton()
  * to diplay the modification button that will allow the modal to be displayed
  * this function is called only if the user is logged in
  **************************************/
-function displayAdminTool(){
-    const portfolio_titleZone = document.getElementById("portfolio-titleZone");
-    
-
+function displayEditButton(){
+    const editButton = document.querySelector(".editButton");
+    editButton.classList.remove("hidden");
 }
