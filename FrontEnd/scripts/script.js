@@ -1,13 +1,9 @@
 /********** DATA DOWNLOAD FROM API *************/
 // fetching the different category from the API
-const responseCategories = await fetch("http://localhost:5678/api/categories");
-const categories = await responseCategories.json()
-console.log(categories);
+const categories = await fetchCategories();
 
 // fetching all the works from the API
-const responseWorks = await fetch("http://localhost:5678/api/works");
-const works = await responseWorks.json();
-console.log(works);
+const works = await fetchWorks();
 
 /********** INITIALISATION content from API *************/
 diplayGallery(works); // Dynamically populating the gallery with the works from the API using the function
@@ -70,13 +66,12 @@ for(let i=0; i<filterButtonsElement.length; i++){
 const editButton = document.querySelector(".editButton");
 editButton.addEventListener("click", () =>{
     openModale();
-    //clickOutToClose(); // add event listner on the modal to close it when click outside
 });
 
 // add event listner on cross icon to close the modale
 const crossIcon = document.querySelector(".crossIcon");
-crossIcon.addEventListener("click", ()=>{
-    closeModale();
+crossIcon.addEventListener("click", async ()=>{
+    await closeModale();
 });
 
 // add event listner on arrow icon to go back to gallery screen
@@ -91,9 +86,45 @@ addPhotoButton.addEventListener("click", ()=>{
     displayModaleNewPhotoScreen();
 });
 
+// add event listners on all bin icon button to deleteWork
+const binIconElements = document.querySelectorAll(".binIcon");
+console.log(binIconElements);
+for (let i=0; i<binIconElements.length; i++){
+    binIconElements[i].addEventListener("click", async (event)=>{
+        const work_id = event.target.dataset.id;
+        console.log(work_id);
+        await deleteWork(work_id);
+        const updatedWorks = await fetchWorks();
+        diplayGallery(updatedWorks);
+        const imgCard = event.target.parentElement;
+        imgCard.remove();
+    });
+}
 
 
 /******** FONCTIONS ***********/
+
+/********function fetchCategories()
+ * to fetch the work from the API
+ * @return {array} categories: return an array with all the categories  
+ **************************************/
+async function fetchCategories(){
+    const responseCategories = await fetch("http://localhost:5678/api/categories");
+    const categories = await responseCategories.json()
+    console.log(categories);
+    return categories;
+}
+
+/********function fetchWorks()
+ * to fetch the work from the API
+ * @return {array} works: return an array with all the works  
+ **************************************/
+async function fetchWorks(){
+    const responseWorks = await fetch("http://localhost:5678/api/works");
+    const works = await responseWorks.json();
+    console.log(works);
+    return works;
+}
 
 /********function diplayGallery(works)
  * to diplay the galery 
@@ -119,6 +150,7 @@ function diplayGallery(works){
     
         galleryElement.appendChild(figureElement);
     }
+    console.log("Main Gallery is updated");
 }
 
 /********function filterAndDiplayWork(category-id)
@@ -167,6 +199,7 @@ function displayModaleGallery(works){
         const binIconElement = document.createElement("img");
         binIconElement.src = "./assets/icons/binIcon.png";
         binIconElement.alt = "icon showing a bin - press to remove picture";
+        binIconElement.dataset.id = works[i].id;
         binIconElement.classList.add("binIcon");
 
         imgCard.appendChild(imgElement);
@@ -174,6 +207,7 @@ function displayModaleGallery(works){
 
         modaleGalleryElement.appendChild(imgCard);
     }
+    console.log("Modal mini gallery updated");
 }
 
 /********function OpenModale()
@@ -191,12 +225,13 @@ function openModale(){
 /********function closeModale()
  * calling this function will hide the modal
  **************************************/
-function closeModale(){
+async function closeModale(){
     const modaleElement = document.querySelector(".modale");
     modaleElement.classList.add("hidden");
     const darkBackGroundElement = document.querySelector(".darkBackGround");
     darkBackGroundElement.classList.add("hidden");
-    stopClickOutToClose();
+    const updatedWorks = await fetchWorks();
+    diplayGallery(updatedWorks);
 }
 
 /********function diplayModaleGalleryScreen()
@@ -218,7 +253,6 @@ function diplayModaleGalleryScreen(){
     // display teh screen 1 i.e. the galery screen
     const galleryScreen = document.querySelector(".galleryScreen");
     galleryScreen.classList.remove("hidden");
-
 }
 
 /********function diplayModaleNewPhotoScreen()
@@ -267,4 +301,25 @@ function clickOutToClose(){
         closeModale();
     });
 }
-
+/********function deleteWork()
+ * This function add an event listner on the document so that if we click
+ * outside the modale - it close
+ **************************************/
+async function deleteWork(work_id){
+    fetch(`http://localhost:5678/api/works/${work_id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.localStorage.getItem("1")}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Network response was not ok');
+        }
+        console.log('Resource deleted successfully');
+    })
+    .catch(error => {
+        console.error('There was a problem with the DELETE request:', error.message);
+    });
+}
