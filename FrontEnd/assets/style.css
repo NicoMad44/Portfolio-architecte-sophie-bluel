@@ -216,8 +216,8 @@ button:hover{
 
 .gallery img {
 	width: 100%;
-
 }
+
 #contact, #login {
 	width: 40%;
 	margin: auto;
@@ -240,14 +240,19 @@ button:hover{
 }
 
 #contact input,
-#login input {
+#login input,
+.modale-newPhotoForm input,
+#category {
 	height: 50px;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	padding-left: 20px;
 }
+
 #contact label,
-#login label {
+#login label,
+.modale-newPhotoForm label {
 	margin: 2em 0 1em 0;
 }
 #contact textarea {
@@ -278,5 +283,163 @@ footer nav ul {
 
 
 .hidden{
-	display:none;
+	display:none !important;
+}
+
+
+/* Modale */
+
+
+.darkBackGround{
+	position: fixed;
+  	top: 0;
+  	left: 0;
+  	width: 100vw;
+  	height: 100vh;
+ 	background: rgba(0,0,0,0.5);
+  	z-index: 5;
+}
+
+
+.modale{
+	position: absolute;
+	top:60%;
+	left:50%;
+	z-index: 1;
+	transform: translate(-50%, -50%);
+	background-color: var(--main-bg-color);
+	height: 65vh;
+	width: 50vw;
+	border-radius: 10px;
+	background-color: var(--main-bg-color);
+	z-index: 10;
+	padding:30px;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	overflow: scroll;
+}
+
+.modale .greenButton{
+	background-color: var(--main-color);
+	color: white;
+	width: 60%;
+	cursor: pointer;
+}
+
+.modale-nav{
+	width: 100%;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.modale-nav .arrowIcon{
+	width: 21px;
+}
+
+.modale-nav .crossIcon{
+	width: 12px;
+	cursor: pointer;
+}
+
+.modale-screen{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-left:70px ;
+	padding-right:70px ;
+}
+
+.modale-title{
+	font-size: 26px;
+	font-weight: 400;
+	margin-bottom: 40px;
+}
+
+.modale-gallery {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	width: 100%;
+	gap: 10px;
+	margin-bottom: 40px;
+}
+
+.imgCard{
+	position: relative;
+
+}
+
+.imgCard .binIcon{
+	position: absolute;
+	top:0;
+	right: 0;
+	z-index: 11;
+	width: 17px;
+	margin:5px;
+	cursor: pointer;
+}
+
+.modale-gallery img {
+	width: 100%;
+	object-fit: cover; 
+	margin-bottom: 30px;
+
+}
+
+.modale-footer{
+	display: flex;
+	justify-content: center;
+	padding-top: 40px;
+	border-top:1px solid #B3B3B3;
+	width: 100%;
+}
+
+
+.importPhotoZone{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 15px;
+	width:100%;
+	background-color: #E8F1F6;
+	border-radius: 3px;
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
+.importPhotoZone .pictureIcon{
+	width: 76px;
+}
+
+.importPhotoZone p{
+	color:#444444;
+}
+
+.modale .blueButton{
+	background-color: #CBD6DC;
+	border:none;
+	padding: 12px 14px 12px 14px;
+	color: #306685;
+	width: 40%;
+}
+
+.modale-newPhotoForm{
+	display: flex;
+	flex-direction: column;
+	width: 100%;	
+}
+
+#category{
+	margin-bottom: 60px;
+}
+
+.modale .greyButton{
+	background-color: #A7A7A7;
+	border:none;
+	padding: 12px 14px 12px 14px;
+	margin:0;
+	width: 60%;
 }

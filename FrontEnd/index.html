@@ -72,5 +72,41 @@
 		</ul>
 	</nav>
 </footer>
+
+<div class="darkBackGround hidden"></div>
+<div class="modale hidden">
+	<div class="modale-nav">
+		<img src="./assets/icons/backArrow.png" alt="back arrow to comeback on previous modale screen" class="arrowIcon hidden">
+		<img src="./assets/icons/cross.png" alt="cross to close modale window" class="crossIcon">
+	</div>
+	<div class="modale-screen galleryScreen ">
+		<h3 class="modale-title">Galerie photo</h3>
+		<div class="modale-gallery"></div>
+		<div class="modale-footer">
+			<button class="greenButton">Ajouter une photo</button>
+		</div>
+	</div>	
+	<div class="modale-screen newPhotoScreen hidden">
+		<h3 class="modale-title">Ajout photo</h3>
+		<div class="importPhotoZone">
+			<img src="./assets/icons/pictureIcon.png" alt="picture icon" class="pictureIcon">
+			<button class="blueButton">+ Ajouter photo</button>
+			<p>jpg, png : 4mo max</p>
+		</div>
+		<form class="modale-newPhotoForm">
+			<label for="titre">Titre</label>
+			<input type="text" name="titre" id="titre">
+			<label for="category">Catégorie</label>
+			<select name="category" id="category">
+			</select>
+			<div class="modale-footer">
+				<input type="submit" value="Valider" class="greyButton">	
+			</div>
+		</form>	
+	</div>
+</div>
+
+
+
 </body>
 </html>
