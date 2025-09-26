@@ -98,6 +98,7 @@ addPhotoButton.addEventListener("click", ()=>{
 /********function diplayGallery(works)
  * to diplay the galery 
  * taking a table of works as parameter
+ * @param {array of work} works 
  **************************************/
 function diplayGallery(works){
     const galleryElement = document.querySelector(".gallery");
@@ -123,6 +124,7 @@ function diplayGallery(works){
 /********function filterAndDiplayWork(category-id)
  * to diplay the galery but only for a specific category 
  * taking the category - id as parameter
+ * @param {number} cat_id: ID of the category of work user wants to see
  **************************************/
 function filterAndDisplayWork(cat_id){
     if(cat_id==0){
@@ -148,6 +150,7 @@ function displayEditButton(){
 /********function diplayModaleGallery(works)
  * to diplay the mini Galery on the modale form
  * taking a table of works as parameter
+ * @param {array of work} works 
  **************************************/
 function displayModaleGallery(works){
     const modaleGalleryElement = document.querySelector(".modale-gallery");
@@ -243,6 +246,7 @@ function displayModaleNewPhotoScreen(){
 /********function makeCategoryMenu()
  * This function populate the drop down menu category of the modale,
  * taking as parameter the category info to display
+ * @param {array of category} category 
  **************************************/
 function makeCategoryMenu(category){
     const dropDownMenu = document.getElementById("category");
