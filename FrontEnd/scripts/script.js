@@ -1,3 +1,4 @@
+/********** DATA DOWNLOAD FROM API *************/
 // fetching the different category from the API
 const responseCategories = await fetch("http://localhost:5678/api/categories");
 const categories = await responseCategories.json()
@@ -8,37 +9,32 @@ const responseWorks = await fetch("http://localhost:5678/api/works");
 const works = await responseWorks.json();
 console.log(works);
 
-
-// Dynamically populating the gallery with the works from the API using the function
-
-diplayGallery(works);
-displayModaleGallery(works);
+/********** INITIALISATION content from API *************/
+diplayGallery(works); // Dynamically populating the gallery with the works from the API using the function
+displayModaleGallery(works); // Dynamically populating the gallery with the works from the API using the function
 makeCategoryMenu(category); // populate the category drop down menu of the form with function
 
+/********** LOGIN Management *************/
 // Check if user logedin and add the admin modification button if it is the case
 if (!window.localStorage.getItem("1")){
-    console.log("pas logger");
+    console.log("Not Logged-in");
 } else {
     displayEditButton();
-    console.log("logger");
+    console.log("Logged-in");
     console.log(window.localStorage.getItem("1"));
 }
 
-
-// Dynamically popylating the filter zone with
-
+/******** FILTER ***********/
+// Dynamically creating & populating the filter
 const filterZone = document.querySelector(".filterZone");
-
-// Methode One : creation of the filter button based on a new API feed to get the category data
-
+    // Methode One : creation of the filter button based on a new API feed to get the category data
     for (let i=0; i<categories.length;i++){
         const filterButton = document.createElement("button");
         filterButton.innerText = categories[i].name;
         filterButton.dataset.id = categories[i].id;
         filterZone.appendChild(filterButton);
     } 
-
-// Methode 2: Using the existing works data
+    /* Methode 2: Using the existing works data --- uncompleted
 
     /* const cat_ID = new Set();
     const categoriesInWorks = new Set();
@@ -58,23 +54,17 @@ const filterZone = document.querySelector(".filterZone");
         filterZone.appendChild(filterButton);
     } */
 
-
-// Filter builder
-
+// add event listner on all button
 const filterButtonsElement =document.querySelectorAll(".filterZone button");
-
-/* loop to add event listner on all button - I use the dataset.id to know which button is clicked
-* When a button is clicked, I call the function to filter and display the works
-*/
+//use the dataset.id to know which button is clicked and call the function
 for(let i=0; i<filterButtonsElement.length; i++){
     filterButtonsElement[i].addEventListener("click",(event)=>{
         const category_id = filterButtonsElement[i].dataset.id;
-        
         filterAndDisplayWork(category_id);
-
     })
 }
 
+/********** MODALE *************/
 
 // add event listner on the "edit button" to open the modale
 const editButton = document.querySelector(".editButton");
@@ -82,8 +72,6 @@ editButton.addEventListener("click", () =>{
     openModale();
     //clickOutToClose(); // add event listner on the modal to close it when click outside
 });
-
-
 
 // add event listner on cross icon to close the modale
 const crossIcon = document.querySelector(".crossIcon");
@@ -97,7 +85,6 @@ arrowIcon.addEventListener("click", ()=>{
     diplayModaleGalleryScreen();
 });
 
-
 // add event listner on Ajouter Une Photo button
 const addPhotoButton = document.querySelector(".greenButton");
 addPhotoButton.addEventListener("click", ()=>{
@@ -105,6 +92,8 @@ addPhotoButton.addEventListener("click", ()=>{
 });
 
 
+
+/******** FONCTIONS ***********/
 
 /********function diplayGallery(works)
  * to diplay the galery 
@@ -196,7 +185,6 @@ function openModale(){
     clickOutToClose()
 }
 
-
 /********function closeModale()
  * calling this function will hide the modal
  **************************************/
@@ -229,9 +217,6 @@ function diplayModaleGalleryScreen(){
     galleryScreen.classList.remove("hidden");
 
 }
-
-
-
 
 /********function diplayModaleNewPhotoScreen()
  * calling this function will hide modal gallery screen and display add new photo screen
