@@ -101,6 +101,64 @@ for (let i=0; i<binIconElements.length; i++){
     });
 }
 
+// add event listner on the bleu ajouter photo button
+const addPhotoButton2 = document.querySelector(".importPhotoZone .addPhotoButton");
+const inputImgElement = document.getElementById("inputImg");
+
+addPhotoButton2.addEventListener("click",async ()=>{
+    inputImgElement.click();
+})
+inputImgElement.addEventListener("change", (event)=>{
+    const file = event.target.files[0];
+    displayPreview(file);
+})
+
+
+function displayPreview(file){
+    const fileUrl = URL.createObjectURL(file);
+    const imgPreviewElement = document.querySelector(".imgPreview");
+    imgPreviewElement.src = fileUrl;
+    imgPreviewElement.classList.remove("hidden");
+    const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
+    zoneToHideAfterSelection.classList.add("hidden");
+}
+
+function hidePreview(){
+    const imgPreviewElement = document.querySelector(".imgPreview");
+    imgPreviewElement.classList.add("hidden");
+    const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
+    zoneToHideAfterSelection.classList.remove("hidden");
+}
+
+
+function sendImg(){
+    document.getElementById('uploadBtn').addEventListener('click', function () {
+        const file = fileInput.files[0];
+        if (!file) return;
+      
+        const formData = new FormData();
+        formData.append('file', file);
+      
+        // Example endpoint: /upload (adapt as needed)
+        fetch('/upload', {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('Upload successful!');
+          })
+          .catch(error => {
+            alert('Upload failed!');
+          });
+      });
+}
+
+
+
+
+
+
 
 /******** FONCTIONS ***********/
 
@@ -178,7 +236,6 @@ function displayEditButton(){
     editButton.classList.remove("hidden");
 }
 
-
 /********function diplayModaleGallery(works)
  * to diplay the mini Galery on the modale form
  * taking a table of works as parameter
@@ -232,6 +289,7 @@ async function closeModale(){
     darkBackGroundElement.classList.add("hidden");
     const updatedWorks = await fetchWorks();
     diplayGallery(updatedWorks);
+    hidePreview();
 }
 
 /********function diplayModaleGalleryScreen()

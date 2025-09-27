@@ -89,9 +89,13 @@
 	<div class="modale-screen newPhotoScreen hidden">
 		<h3 class="modale-title">Ajout photo</h3>
 		<div class="importPhotoZone">
-			<img src="./assets/icons/pictureIcon.png" alt="picture icon" class="pictureIcon">
-			<button class="blueButton">+ Ajouter photo</button>
-			<p>jpg, png : 4mo max</p>
+			<img class="imgPreview hidden" alt="image preview">
+			<div class="zoneToHideAfterSelection">
+				<img src="./assets/icons/pictureIcon.png" alt="picture icon" class="pictureIcon">
+				<button class="blueButton addPhotoButton">+ Ajouter photo</button>
+				<input type="file" id="inputImg" name="inputImg" accept="image/png, image/jpeg"/>
+				<p>jpg, png : 4mo max</p>
+			</div>
 		</div>
 		<form class="modale-newPhotoForm">
 			<label for="titre">Titre</label>
