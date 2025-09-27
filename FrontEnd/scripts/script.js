@@ -87,23 +87,13 @@ addPhotoButton.addEventListener("click", ()=>{
 });
 
 // add event listners on all bin icon button to deleteWork
-const binIconElements = document.querySelectorAll(".binIcon");
-console.log(binIconElements);
-for (let i=0; i<binIconElements.length; i++){
-    binIconElements[i].addEventListener("click", async (event)=>{
-        const work_id = event.target.dataset.id;
-        console.log(work_id);
-        await deleteWork(work_id);
-        const updatedWorks = await fetchWorks();
-        diplayGallery(updatedWorks);
-        const imgCard = event.target.parentElement;
-        imgCard.remove();
-    });
-}
+addEventListnerOnBinIcon();
+
+
 
 // add event listner on the bleu ajouter photo button
 const addPhotoButton2 = document.querySelector(".importPhotoZone .addPhotoButton");
-const inputImgElement = document.getElementById("inputImg");
+const inputImgElement = document.getElementById("image");
 
 addPhotoButton2.addEventListener("click",async ()=>{
     inputImgElement.click();
@@ -114,50 +104,53 @@ inputImgElement.addEventListener("change", (event)=>{
 })
 
 
-function displayPreview(file){
-    const fileUrl = URL.createObjectURL(file);
-    const imgPreviewElement = document.querySelector(".imgPreview");
-    imgPreviewElement.src = fileUrl;
-    imgPreviewElement.classList.remove("hidden");
-    const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
-    zoneToHideAfterSelection.classList.add("hidden");
+const sendImgButton = document.querySelector(".sendImgButton");
+console.log(sendImgButton);
+
+const newPhotoFormElement = document.querySelector(".modale-newPhotoForm");
+newPhotoFormElement.addEventListener("submit", async (event)=>{
+    event.preventDefault();
+    console.log(event.target);
+    const formData = createPostData();
+    sendImg(formData);
+    updateBothGallery();
+    clearFormInput();
+    closeModale();
+});
+
+
+function clearFormInput(){
+    const titleInput = document.getElementById("title");
+    titleInput.value = "";
 }
 
-function hidePreview(){
-    const imgPreviewElement = document.querySelector(".imgPreview");
-    imgPreviewElement.classList.add("hidden");
-    const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
-    zoneToHideAfterSelection.classList.remove("hidden");
-}
-
-
-function sendImg(){
-    document.getElementById('uploadBtn').addEventListener('click', function () {
-        const file = fileInput.files[0];
-        if (!file) return;
-      
-        const formData = new FormData();
-        formData.append('file', file);
-      
-        // Example endpoint: /upload (adapt as needed)
-        fetch('/upload', {
-          method: 'POST',
-          body: formData
-        })
-          .then(response => response.json())
-          .then(data => {
-            alert('Upload successful!');
-          })
-          .catch(error => {
-            alert('Upload failed!');
-          });
-      });
+function createPostData(){ 
+    const newPhotoForm = document.querySelector(".modale-newPhotoForm");
+    const formData = new FormData(newPhotoForm);
+    formData.delete("category");
+    formData.append("category", 1);
+    return formData
 }
 
 
-
-
-
+function sendImg(formData){
+    fetch(`http://localhost:5678/api/works`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem("1")}`
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Network response was not ok');
+        }
+        console.log('Resource added successfully');
+    })
+    .catch(error => {
+        console.error('There was a problem with the POST request:', error.message);
+    });
+}  
 
 
 /******** FONCTIONS ***********/
@@ -264,6 +257,7 @@ function displayModaleGallery(works){
 
         modaleGalleryElement.appendChild(imgCard);
     }
+    addEventListnerOnBinIcon();
     console.log("Modal mini gallery updated");
 }
 
@@ -287,9 +281,8 @@ async function closeModale(){
     modaleElement.classList.add("hidden");
     const darkBackGroundElement = document.querySelector(".darkBackGround");
     darkBackGroundElement.classList.add("hidden");
-    const updatedWorks = await fetchWorks();
-    diplayGallery(updatedWorks);
-    hidePreview();
+    updateBothGallery();
+    hiddePreview();
 }
 
 /********function diplayModaleGalleryScreen()
@@ -345,6 +338,7 @@ function makeCategoryMenu(category){
     for( let i=0; i<categories.length ; i++){
         const option = document.createElement("option");
         option.value = categories[i].name;
+        option.dataset.id = categories[i].id;
         option.innerText = categories[i].name;
         dropDownMenu.appendChild(option);
     }
@@ -380,4 +374,65 @@ async function deleteWork(work_id){
     .catch(error => {
         console.error('There was a problem with the DELETE request:', error.message);
     });
+}
+
+/********function displayPreview(file)
+ * to display the preview of the file pass as argment
+ * @param {file img} file: img file to dislay
+ **************************************/
+function displayPreview(file){
+    const fileUrl = generateImgURL(file);
+    const imgPreviewElement = document.querySelector(".imgPreview");
+    imgPreviewElement.src = fileUrl;
+    imgPreviewElement.classList.remove("hidden");
+    const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
+    zoneToHideAfterSelection.classList.add("hidden");
+    const titleFromElement = document.getElementById("title");
+    console.log(file.name);
+    titleFromElement.value = file.name;
+}
+
+/********function hidePreview()
+ * to hidde the imgage preview and diplay the button back 
+ **************************************/
+function hiddePreview(){
+    const imgPreviewElement = document.querySelector(".imgPreview");
+    imgPreviewElement.classList.add("hidden");
+    const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
+    zoneToHideAfterSelection.classList.remove("hidden");
+}
+
+/********function generateImgURL(file)
+ * to generate and retung the image URL of a image file
+ * @param {file}
+ * @returns {string} imgURL
+ **************************************/
+function generateImgURL(file){
+    return URL.createObjectURL(file);
+}
+
+/********function addEventListnerOnBinIcon()
+ * to add eventlisnter on all the bin Icon of the modal galery screen
+ * to be called after refresh of the mini galery
+ **************************************/
+function addEventListnerOnBinIcon(){
+    const binIconElements = document.querySelectorAll(".binIcon");
+    console.log(binIconElements);
+    for (let i=0; i<binIconElements.length; i++){
+        binIconElements[i].addEventListener("click", async (event)=>{
+            const work_id = event.target.dataset.id;
+            console.log(work_id);
+            await deleteWork(work_id);
+            const updatedWorks = await fetchWorks();
+            diplayGallery(updatedWorks);
+            const imgCard = event.target.parentElement;
+            imgCard.remove();
+        });
+    }
+}
+
+async function updateBothGallery(){
+    const updatedWorks = await fetchWorks();
+    diplayGallery(updatedWorks);
+    displayModaleGallery(updatedWorks);
 }
