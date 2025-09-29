@@ -8,55 +8,79 @@ const works = await fetchWorks();
 /********** INITIALISATION content from API *************/
 diplayGallery(works); // Dynamically populating the gallery with the works from the API using the function
 displayModaleGallery(works); // Dynamically populating the gallery with the works from the API using the function
-makeCategoryMenu(category); // populate the category drop down menu of the form with function
+makeCategoryMenu(categories); // populate the category drop down menu of the form with function
 
 /********** LOGIN Management *************/
 // Check if user logedin and add the admin modification button if it is the case
-if (!window.localStorage.getItem("1")){
-    console.log("Not Logged-in");
-} else {
+if(userLoggedIn()){
     displayEditButton();
-    console.log("Logged-in");
-    console.log(window.localStorage.getItem("1"));
 }
+
 
 /******** FILTER ***********/
 // Dynamically creating & populating the filter
-const filterZone = document.querySelector(".filterZone");
-    // Methode One : creation of the filter button based on a new API feed to get the category data
-    for (let i=0; i<categories.length;i++){
-        const filterButton = document.createElement("button");
-        filterButton.innerText = categories[i].name;
-        filterButton.dataset.id = categories[i].id;
-        filterZone.appendChild(filterButton);
-    } 
-    /* Methode 2: Using the existing works data --- uncompleted
 
-    /* const cat_ID = new Set();
-    const categoriesInWorks = new Set();
+/* Methode One : creation of the filter button based on a new API feed to get the category data */
 
-    // loop to go througth all the works and add the category to the set - as a set, category will only be inserted once
-    for (let i =0; i<works.length; i++){
-        cat_ID.add(works[i].categoryId);
-        categoriesInWorks.add(works[i].category.name);
-        console.log(works[i].category.name)
+    //buildCategoryFilterFromCategories(categories);
+
+    /**
+     * this function take the category from the api category info
+     * @param {array} categories 
+     */
+    function buildCategoryFilterFromCategories(categories){
+        const filterZone = document.querySelector(".filterZone");
+        filterZone.innerHTML="";
+        const filterButtonTous = document.createElement("button");
+        filterButtonTous.innerText="Tous";
+        filterButtonTous.dataset.id = 0;
+        filterZone.appendChild(filterButtonTous);
+        for (let i=0; i<categories.length;i++){
+            const filterButton = document.createElement("button");
+            filterButton.innerText = categories[i].name;
+            filterButton.dataset.id = categories[i].id;
+            filterZone.appendChild(filterButton);
+        } 
     }
-    console.log(cat_ID);
 
-    for (const catId of cat_ID) {
-        const filterButton = document.createElement("button");
-        filterButton.innerText = category.name;
-        filterButton.dataset.id = catId;
-        filterZone.appendChild(filterButton);
-    } */
+/* Methode 2: Using the existing works data  */
+
+    buildCategoryFilterFromWorks(works);
+
+    /**
+     * this function extract and dedup the category from the API works info 
+     * @param {array} works 
+     */
+    function buildCategoryFilterFromWorks(works){
+        const categoriesInWorks = new Map();
+        categoriesInWorks.set(0,"Tous"); // I add a 0 value for the "tous" option
+        //loop to go througth all the works and add the category to the Map only if id not already contains in Map
+        for (let i =0; i<works.length; i++){
+            if(!categoriesInWorks.has(works[i].category.id)){
+                categoriesInWorks.set(works[i].category.id, works[i].category.name);  
+            }
+        }
+        console.log(`category from Works deduplicated:`)
+        console.log(categoriesInWorks);
+        const filterZone = document.querySelector(".filterZone");
+        filterZone.innerHTML="";
+        for (const [key, value] of categoriesInWorks){
+            const filterButton = document.createElement("button");
+            filterButton.innerText = value;
+            filterButton.dataset.id = key;
+            filterZone.appendChild(filterButton);
+        } 
+        console.log("filter updated")
+    }
+
 
 // add event listner on all button
 const filterButtonsElement =document.querySelectorAll(".filterZone button");
 //use the dataset.id to know which button is clicked and call the function
 for(let i=0; i<filterButtonsElement.length; i++){
-    filterButtonsElement[i].addEventListener("click",(event)=>{
+    filterButtonsElement[i].addEventListener("click", async (event)=>{
         const category_id = filterButtonsElement[i].dataset.id;
-        filterAndDisplayWork(category_id);
+        await filterAndDisplayWork(category_id);
     })
 }
 
@@ -91,48 +115,122 @@ addEventListnerOnBinIcon();
 
 
 
-// add event listner on the bleu ajouter photo button
-const addPhotoButton2 = document.querySelector(".importPhotoZone .addPhotoButton");
+// add event listner on the bleu Select photo button
+const selectPhotoButton = document.querySelector(".importPhotoZone .selectPhotoButton");
 const inputImgElement = document.getElementById("image");
 
-addPhotoButton2.addEventListener("click",async ()=>{
+selectPhotoButton.addEventListener("click",async ()=>{
     inputImgElement.click();
 })
 inputImgElement.addEventListener("change", (event)=>{
     const file = event.target.files[0];
-    displayPreview(file);
+    if(verifiedPhoto(file)){
+        displayPreview(file);
+        allowSubmition();
+    } else {
+        displayErrorMessage(file);
+    }
+})
+
+//add event listner on the title field of the form
+// if filled then we check if there is a photo in preview and if yes, then we can allow submition
+const titleInput = document.getElementById("title");
+const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
+titleInput.addEventListener("change",()=>{
+
+    if(titleInput.value != "" && zoneToHideAfterSelection.classList.contains("hidden")) {// if hidden, it means that there is eligeable photo selected
+        allowSubmition();
+    } 
 })
 
 
-const sendImgButton = document.querySelector(".sendImgButton");
-console.log(sendImgButton);
+
 
 const newPhotoFormElement = document.querySelector(".modale-newPhotoForm");
 newPhotoFormElement.addEventListener("submit", async (event)=>{
     event.preventDefault();
-    console.log(event.target);
     const formData = createPostData();
-    sendImg(formData);
-    updateBothGallery();
-    clearFormInput();
-    closeModale();
+    await sendImg(formData);
+    await updateBothGallery();
+    closeModale(); 
 });
 
+/******** FONCTIONS ***********/
 
+/**
+ * to enable form button to submit image
+ */
+function allowSubmition(){
+    const sendPhotoButton = document.querySelector(".sendImgButton");
+        sendPhotoButton.disabled = false;
+}
+
+
+
+/**
+ * to display an error message when the selected file is not respecting constraint
+ */
+function displayErrorMessage(file){
+    const errorMessage = `The image ${file.name} is too large, please choose select an image less than 4Mo`
+    const errorMessageElement = document.createElement("p");
+    errorMessageElement.classList.add("errorMessage");
+    errorMessageElement.innerText = errorMessage;
+    document.querySelector(".zoneToHideAfterSelection").appendChild(errorMessageElement);
+}
+
+/**
+ * to remove the error message & clean form
+ */
+function removeErrorMessage(){
+    if(document.querySelector(".zoneToHideAfterSelection .errorMessage") != null){
+        document.querySelector(".zoneToHideAfterSelection .errorMessage").innerHTML="";
+    }
+}
+
+/**
+ * to check that the file selected is following the rules:
+ * i.e. png or jpeg and size< 4mo
+ * @param {file}: file to verify
+ * @returns {boolean}: true if respect rule
+ */
+function verifiedPhoto(file){
+    if(file.size<=4000000 && ((file.type === "image/png") || (file.type === "image/jpeg"))){
+        console.log(file);
+        console.log("Photo validated")
+        return true
+    }
+    console.log("file is too large or not the right format")
+    return false
+}
+
+/** 
+ * This function empty the title field fo the form 
+ *****************************************************************************/
 function clearFormInput(){
     const titleInput = document.getElementById("title");
     titleInput.value = "";
+    const imgInput = document.getElementById("image");
+    imgInput.value = "";
 }
 
+/** 
+ * This function get the info from the form and format it in a formData Object that it returns
+ * @return {formData} formData :info from the form 
+ *****************************************************************************/
 function createPostData(){ 
     const newPhotoForm = document.querySelector(".modale-newPhotoForm");
     const formData = new FormData(newPhotoForm);
-    formData.delete("category");
-    formData.append("category", 1);
+    const categoryName = formData.get("category");
+    //finding the category id from the category name:
+    const found = categories.find(item => item.name === categoryName);
+    const categoryId = found ? found.id : undefined;
+    formData.set("category", categoryId);
     return formData
 }
 
-
+/** 
+ * This function send a POST request to the API and upload the info contains in the formData
+ *****************************************************************************/
 function sendImg(formData){
     fetch(`http://localhost:5678/api/works`, {
         method: 'POST',
@@ -152,40 +250,38 @@ function sendImg(formData){
     });
 }  
 
-
-/******** FONCTIONS ***********/
-
-/********function fetchCategories()
- * to fetch the work from the API
+/**
+ * to fetch the categories from the API
  * @return {array} categories: return an array with all the categories  
  **************************************/
 async function fetchCategories(){
     const responseCategories = await fetch("http://localhost:5678/api/categories");
     const categories = await responseCategories.json()
+    console.log("categories updated:");
     console.log(categories);
     return categories;
 }
 
-/********function fetchWorks()
+/**
  * to fetch the work from the API
  * @return {array} works: return an array with all the works  
  **************************************/
 async function fetchWorks(){
     const responseWorks = await fetch("http://localhost:5678/api/works");
     const works = await responseWorks.json();
+    console.log("works updated:");
     console.log(works);
     return works;
 }
 
-/********function diplayGallery(works)
- * to diplay the galery 
- * taking a table of works as parameter
+/** 
+ * to diplay the galery taking a table of works as parameter
  * @param {array of work} works 
  **************************************/
 function diplayGallery(works){
     const galleryElement = document.querySelector(".gallery");
     galleryElement.innerHTML="";
-    // for loop to create a figure for each works that will be poplulating the gallery on the page
+    // loop to create a figure for each works that will be poplulating the gallery on the page
     for(let i=0; i<works.length;i++){
         const figureElement = document.createElement("figure");
     
@@ -204,12 +300,31 @@ function diplayGallery(works){
     console.log("Main Gallery is updated");
 }
 
-/********function filterAndDiplayWork(category-id)
+/**
+ * to fetch the data from API and update the gallery by redisplaying it  
+ ************************************************************************/
+async function updateGallery(){
+    const updatedWorks = await fetchWorks();
+    diplayGallery(updatedWorks);
+}
+
+/**
+ * to fetch the data from API and update the Modale gallery by redisplaying it  
+ ************************************************************************/
+async function updateModaleGallery(){
+    const updatedWorks = await fetchWorks();
+    diplayGallery(updatedWorks);
+    displayModaleGallery(updatedWorks);
+}
+
+
+/**
  * to diplay the galery but only for a specific category 
  * taking the category - id as parameter
  * @param {number} cat_id: ID of the category of work user wants to see
  **************************************/
-function filterAndDisplayWork(cat_id){
+async function filterAndDisplayWork(cat_id){
+    const works = await fetchWorks();
     if(cat_id==0){
         diplayGallery(works);
     } else {
@@ -220,7 +335,7 @@ function filterAndDisplayWork(cat_id){
     }
 }
 
-/********function displayEditButton()
+/**
  * to diplay the modification button that will allow the modal to be displayed
  * this function is called only if the user is logged in
  **************************************/
@@ -229,8 +344,8 @@ function displayEditButton(){
     editButton.classList.remove("hidden");
 }
 
-/********function diplayModaleGallery(works)
- * to diplay the mini Galery on the modale form
+/**
+ * to diplay the mini Galery on the modale form & add eventlistner on all "bin Icon"
  * taking a table of works as parameter
  * @param {array of work} works 
  **************************************/
@@ -261,8 +376,8 @@ function displayModaleGallery(works){
     console.log("Modal mini gallery updated");
 }
 
-/********function OpenModale()
- * calling this function will Open the modal
+/**
+ * calling this function will Open the modal and
  **************************************/
 function openModale(){
     const modaleElement = document.querySelector(".modale");
@@ -270,11 +385,12 @@ function openModale(){
     const darkBackGroundElement = document.querySelector(".darkBackGround");
     darkBackGroundElement.classList.remove("hidden");
     diplayModaleGalleryScreen();
-    clickOutToClose()
+    clickOutToClose();
 }
 
-/********function closeModale()
- * calling this function will hide the modal
+/**
+ * calling this function will hide the modal and
+ * -> update both gallery i.e. fetch the works from the API and update
  **************************************/
 async function closeModale(){
     const modaleElement = document.querySelector(".modale");
@@ -283,9 +399,11 @@ async function closeModale(){
     darkBackGroundElement.classList.add("hidden");
     updateBothGallery();
     hiddePreview();
+    removeErrorMessage();
+    clearFormInput();
 }
 
-/********function diplayModaleGalleryScreen()
+/**
  * calling this function will hide the add photo screen and display the modal gallery screen
  *  **************************************/
 function diplayModaleGalleryScreen(){
@@ -297,7 +415,7 @@ function diplayModaleGalleryScreen(){
     const navElement = document.querySelector(".modale-nav");
     navElement.style.flexDirection = "row-reverse";
 
-    // hide the new photo screen by removing the .hidden class
+    // hide the new photo screen by adding the .hidden class
     const newPhotoScreen = document.querySelector(".newPhotoScreen");
     newPhotoScreen.classList.add("hidden");
 
@@ -306,7 +424,7 @@ function diplayModaleGalleryScreen(){
     galleryScreen.classList.remove("hidden");
 }
 
-/********function diplayModaleNewPhotoScreen()
+/**
  * calling this function will hide modal gallery screen and display add new photo screen
  **************************************/
 function displayModaleNewPhotoScreen(){
@@ -328,12 +446,12 @@ function displayModaleNewPhotoScreen(){
 
 }
 
-/********function makeCategoryMenu()
+/**
  * This function populate the drop down menu category of the modale,
  * taking as parameter the category info to display
  * @param {array of category} category 
  **************************************/
-function makeCategoryMenu(category){
+function makeCategoryMenu(categories){
     const dropDownMenu = document.getElementById("category");
     for( let i=0; i<categories.length ; i++){
         const option = document.createElement("option");
@@ -342,10 +460,11 @@ function makeCategoryMenu(category){
         option.innerText = categories[i].name;
         dropDownMenu.appendChild(option);
     }
+    console.log("menu updated")
 }
 
-/********function clickOutToClose()
- * This function add an event listner on the document so that if we click
+/**
+ * This function add an event listner on the modale overalay so that if we click
  * outside the modale - it close
  **************************************/
 function clickOutToClose(){
@@ -353,9 +472,9 @@ function clickOutToClose(){
         closeModale();
     });
 }
+
 /********function deleteWork()
- * This function add an event listner on the document so that if we click
- * outside the modale - it close
+ * This function make a DELETE request to the API and delete work of work_id from API
  **************************************/
 async function deleteWork(work_id){
     fetch(`http://localhost:5678/api/works/${work_id}`, {
@@ -376,7 +495,7 @@ async function deleteWork(work_id){
     });
 }
 
-/********function displayPreview(file)
+/**
  * to display the preview of the file pass as argment
  * @param {file img} file: img file to dislay
  **************************************/
@@ -388,7 +507,6 @@ function displayPreview(file){
     const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
     zoneToHideAfterSelection.classList.add("hidden");
     const titleFromElement = document.getElementById("title");
-    console.log(file.name);
     titleFromElement.value = file.name;
 }
 
@@ -402,8 +520,8 @@ function hiddePreview(){
     zoneToHideAfterSelection.classList.remove("hidden");
 }
 
-/********function generateImgURL(file)
- * to generate and retung the image URL of a image file
+/**
+ * to generate and returning the image URL of a image file
  * @param {file}
  * @returns {string} imgURL
  **************************************/
@@ -411,28 +529,43 @@ function generateImgURL(file){
     return URL.createObjectURL(file);
 }
 
-/********function addEventListnerOnBinIcon()
+/**
  * to add eventlisnter on all the bin Icon of the modal galery screen
- * to be called after refresh of the mini galery
+ * when cliked: the work is deleted and the img is removed form screen
  **************************************/
 function addEventListnerOnBinIcon(){
     const binIconElements = document.querySelectorAll(".binIcon");
-    console.log(binIconElements);
     for (let i=0; i<binIconElements.length; i++){
         binIconElements[i].addEventListener("click", async (event)=>{
             const work_id = event.target.dataset.id;
             console.log(work_id);
             await deleteWork(work_id);
-            const updatedWorks = await fetchWorks();
-            diplayGallery(updatedWorks);
             const imgCard = event.target.parentElement;
             imgCard.remove();
         });
     }
 }
 
+/**
+ * to fetch work from the API and update both photos gallery
+ */
 async function updateBothGallery(){
     const updatedWorks = await fetchWorks();
     diplayGallery(updatedWorks);
     displayModaleGallery(updatedWorks);
+}
+
+/**
+ * check if user if logged in and return true if he is 
+ * @returns {boolean} : true if logged in, flase if not
+ **************************************/
+function userLoggedIn(){
+    if (!window.localStorage.getItem("1")){
+        console.log("Not Logged-in");
+        return false;
+    } else {
+        console.log("Logged-in");
+        console.log(window.localStorage.getItem("1"));
+        return true;
+    }
 }

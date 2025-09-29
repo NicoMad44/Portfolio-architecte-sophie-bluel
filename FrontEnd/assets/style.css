@@ -216,6 +216,7 @@ button:hover{
 
 .gallery img {
 	width: 100%;
+	max-height: 490px;
 }
 
 #contact, #login {
@@ -269,6 +270,7 @@ input[type="submit"]{
 	width: 180px;
 	text-align: center;
 	border-radius: 60px ;
+	padding: 1px 20px 1px 20px;
 }
 
 footer{
@@ -452,10 +454,20 @@ footer nav ul {
 	margin-bottom: 60px;
 }
 
-.modale .greyButton{
-	background-color: #A7A7A7;
+.sendImgButton{
+	background-color: var(--main-color);
 	border:none;
 	padding: 12px 14px 12px 14px;
 	margin:0;
 	width: 60%;
+}
+.sendImgButton:disabled{
+	background-color: #A7A7A7;
+}
+
+.modale .errorMessage{
+	color: red;
+	text-align: center;
+	margin-left: 10%;
+	margin-right:10%;
 }
