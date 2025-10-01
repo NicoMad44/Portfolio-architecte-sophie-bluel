@@ -360,6 +360,7 @@ function displayModaleGallery(works){
         const imgElement = document.createElement("img");
         imgElement.src = works[i].imageUrl;
         imgElement.alt = works[i].title;
+        imgElement.classList.add("imgPhoto");
 
         const binIconElement = document.createElement("img");
         binIconElement.src = "./assets/icons/binIcon.png";

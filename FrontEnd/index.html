@@ -73,42 +73,46 @@
 	</nav>
 </footer>
 
-<div class="darkBackGround hidden"></div>
-<div class="modale hidden">
-	<div class="modale-nav">
-		<img src="./assets/icons/backArrow.png" alt="back arrow to comeback on previous modale screen" class="arrowIcon hidden">
-		<img src="./assets/icons/cross.png" alt="cross to close modale window" class="crossIcon">
-	</div>
-	<div class="modale-screen galleryScreen ">
-		<h3 class="modale-title">Galerie photo</h3>
-		<div class="modale-gallery"></div>
-		<div class="modale-footer">
-			<button class="greenButton">Ajouter une photo</button>
+<aside id="modaleBg" class:="darkBackGround hidden" aria-hidden="true" role="dialog" aria-labelledby="modale_title">
+	<div class="modale hidden">
+		<div class="modale-nav">
+			<img src="./assets/icons/backArrow.png" alt="back arrow to comeback on previous modale screen" class="arrowIcon hidden">
+			<img src="./assets/icons/cross.png" alt="cross to close modale window" class="crossIcon">
 		</div>
-	</div>	
-	<div class="modale-screen newPhotoScreen hidden">
-		<h3 class="modale-title">Ajout photo</h3>
-		<div class="importPhotoZone">
-			<img class="imgPreview hidden" alt="image preview">
-			<div class="zoneToHideAfterSelection">
-				<img src="./assets/icons/pictureIcon.png" alt="picture icon" class="pictureIcon">
-				<button class="blueButton selectPhotoButton">+ Ajouter photo</button>
-				<p>jpg, png : 4mo max</p>
-			</div>
-		</div>
-		<form class="modale-newPhotoForm">
-			<input type="file" id="image" name="image" accept="image/png, image/jpeg"/>
-			<label for="title">Titre</label>
-			<input type="text" name="title" id="title">
-			<label for="category">Catégorie</label>
-			<select name="category" id="category">
-			</select>
+		<div class="modale-screen galleryScreen ">
+			<h3 id="modale_title" class="modale-title">Galerie photo</h3>
+			<div class="modale-gallery"></div>
 			<div class="modale-footer">
-				<input type="submit" value="Valider" disabled class="sendImgButton">	
+				<button class="greenButton">Ajouter une photo</button>
 			</div>
-		</form>	
+		</div>	
+		<div class="modale-screen newPhotoScreen hidden">
+			<h3 class="modale-title">Ajout photo</h3>
+			<div class="importPhotoZone">
+				<img class="imgPreview hidden" alt="image preview">
+				<div class="zoneToHideAfterSelection">
+					<img src="./assets/icons/pictureIcon.png" alt="picture icon" class="pictureIcon">
+					<button class="blueButton selectPhotoButton">+ Ajouter photo</button>
+					<p>jpg, png : 4mo max</p>
+				</div>
+			</div>
+			<form class="modale-newPhotoForm">
+				<input type="file" id="image" name="image" accept="image/png, image/jpeg"/>
+				<label for="title">Titre</label>
+				<input type="text" name="title" id="title">
+				<label for="category">Catégorie</label>
+				<select name="category" id="category">
+				</select>
+				<div class="modale-footer">
+					<input type="submit" value="Valider" disabled class="sendImgButton">	
+				</div>
+			</form>	
+		</div>
 	</div>
-</div>
+</aside>
+
+<!-- <div class="darkBackGround hidden"></div> -->
+
 
 
 
