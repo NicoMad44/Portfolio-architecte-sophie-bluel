@@ -1,21 +1,25 @@
 /********** DATA DOWNLOAD FROM API *************/
 // fetching the different category from the API
-const categories = await fetchCategories();
+//const categories = await fetchCategories();
 
 // fetching all the works from the API
-const works = await fetchWorks();
+//const works = await fetchWorks();
 
 /********** INITIALISATION content from API *************/
-diplayGallery(works); // Dynamically populating the gallery with the works from the API using the function
-displayModaleGallery(works); // Dynamically populating the gallery with the works from the API using the function
-makeCategoryMenu(categories); // populate the category drop down menu of the form with function
+//diplayGallery(works); // Dynamically populating the gallery with the works from the API using the function
+//displayModaleGallery(works); // Dynamically populating the gallery with the works from the API using the function
+//makeCategoryMenu(categories); // populate the category drop down menu of the form with function
+
+initialise();
+activateFilterButton();
+
+
 
 /********** LOGIN Management *************/
 // Check if user logedin and add the admin modification button if it is the case
 if(userLoggedIn()){
     displayEditButton();
 }
-
 
 /******** FILTER ***********/
 // Dynamically creating & populating the filter
@@ -45,13 +49,14 @@ if(userLoggedIn()){
 
 /* Methode 2: Using the existing works data  */
 
-    buildCategoryFilterFromWorks(works);
+    
 
     /**
-     * this function extract and dedup the category from the API works info 
+     * this function extract and dedup the category from the API works info and build the category filter button
      * @param {array} works 
      */
-    function buildCategoryFilterFromWorks(works){
+    async function buildCategoryFilterFromWorks(){
+        const works = await fetchWorks();
         const categoriesInWorks = new Map();
         categoriesInWorks.set(0,"Tous"); // I add a 0 value for the "tous" option
         //loop to go througth all the works and add the category to the Map only if id not already contains in Map
@@ -74,15 +79,7 @@ if(userLoggedIn()){
     }
 
 
-// add event listner on all button
-const filterButtonsElement =document.querySelectorAll(".filterZone button");
-//use the dataset.id to know which button is clicked and call the function
-for(let i=0; i<filterButtonsElement.length; i++){
-    filterButtonsElement[i].addEventListener("click", async (event)=>{
-        const category_id = filterButtonsElement[i].dataset.id;
-        await filterAndDisplayWork(category_id);
-    })
-}
+
 
 /********** MODALE *************/
 
@@ -105,7 +102,7 @@ arrowIcon.addEventListener("click", ()=>{
 });
 
 // add event listner on Ajouter Une Photo button
-const addPhotoButton = document.querySelector(".greenButton");
+const addPhotoButton = document.querySelector(".addPhotoButton");
 addPhotoButton.addEventListener("click", ()=>{
     displayModaleNewPhotoScreen();
 });
@@ -115,7 +112,7 @@ addEventListnerOnBinIcon();
 
 
 
-// add event listner on the bleu Select photo button
+// add event listner on the slecte a photo button
 const selectPhotoButton = document.querySelector(".importPhotoZone .selectPhotoButton");
 const inputImgElement = document.getElementById("image");
 
@@ -132,7 +129,7 @@ inputImgElement.addEventListener("change", (event)=>{
     }
 })
 
-//add event listner on the title field of the form
+//add event listner on the photo title field of the form
 // if filled then we check if there is a photo in preview and if yes, then we can allow submition
 const titleInput = document.getElementById("title");
 const zoneToHideAfterSelection = document.querySelector(".zoneToHideAfterSelection");
@@ -145,25 +142,47 @@ titleInput.addEventListener("change",()=>{
 
 
 
-
+// add event listner on the new photo form to send picture when submited
 const newPhotoFormElement = document.querySelector(".modale-newPhotoForm");
 newPhotoFormElement.addEventListener("submit", async (event)=>{
     event.preventDefault();
-    const formData = createPostData();
+    const formData = await createPostData();
     await sendImg(formData);
     await updateBothGallery();
+    await buildCategoryFilterFromWorks();
     closeModale(); 
 });
 
 /******** FONCTIONS ***********/
 
 /**
- * to enable form button to submit image
+ * to initialise the page: by
+ * fetching the info from the api
+ * building the picture gallery on the main screen and the modal
+ * bulding the filter button depending on the work displayed
  */
-function allowSubmition(){
-    const sendPhotoButton = document.querySelector(".sendImgButton");
-        sendPhotoButton.disabled = false;
+async function initialise(){
+    await updateBothGallery();
+    await buildCategoryFilterFromWorks();
+    await makeCategoryMenu();
 }
+
+/**
+ * to add the event listener on all filter button
+ * on the click -> filter the photo according to which button clicked
+ */
+function activateFilterButton(){
+    const filterButtonsElement =document.querySelectorAll(".filterZone button");
+    //use the dataset.id to know which button is clicked and call the function
+    for(let i=0; i<filterButtonsElement.length; i++){
+        filterButtonsElement[i].addEventListener("click", async (event)=>{
+            const category_id = filterButtonsElement[i].dataset.id;
+            await filterAndDisplayWork(category_id);
+        })
+    }
+}
+
+
 
 
 
@@ -217,11 +236,12 @@ function clearFormInput(){
  * This function get the info from the form and format it in a formData Object that it returns
  * @return {formData} formData :info from the form 
  *****************************************************************************/
-function createPostData(){ 
+async function createPostData(){ 
     const newPhotoForm = document.querySelector(".modale-newPhotoForm");
     const formData = new FormData(newPhotoForm);
     const categoryName = formData.get("category");
     //finding the category id from the category name:
+    const categories = await fetchCategories();
     const found = categories.find(item => item.name === categoryName);
     const categoryId = found ? found.id : undefined;
     formData.set("category", categoryId);
@@ -383,8 +403,10 @@ function displayModaleGallery(works){
 function openModale(){
     const modaleElement = document.querySelector(".modale");
     modaleElement.classList.remove("hidden");
-    const darkBackGroundElement = document.querySelector(".darkBackGround");
+    const darkBackGroundElement = document.querySelector("aside.modaleBG");
     darkBackGroundElement.classList.remove("hidden");
+    darkBackGroundElement.setAttribute("aria-hidden", "false");
+    darkBackGroundElement.removeAttribute("aria-modal");
     diplayModaleGalleryScreen();
     clickOutToClose();
 }
@@ -396,12 +418,16 @@ function openModale(){
 async function closeModale(){
     const modaleElement = document.querySelector(".modale");
     modaleElement.classList.add("hidden");
-    const darkBackGroundElement = document.querySelector(".darkBackGround");
+    const darkBackGroundElement = document.querySelector(".modaleBG");
     darkBackGroundElement.classList.add("hidden");
-    updateBothGallery();
+    darkBackGroundElement.setAttribute("aria-hidden", "true");
+    darkBackGroundElement.setAttribute("aria-modal", "false");
+    await updateBothGallery();
+    await buildCategoryFilterFromWorks();
     hiddePreview();
     removeErrorMessage();
     clearFormInput();
+    activateFilterButton();
 }
 
 /**
@@ -449,10 +475,10 @@ function displayModaleNewPhotoScreen(){
 
 /**
  * This function populate the drop down menu category of the modale,
- * taking as parameter the category info to display
- * @param {array of category} category 
+ * fetching the category from the API
  **************************************/
-function makeCategoryMenu(categories){
+async function makeCategoryMenu(){
+    const categories = await fetchCategories();
     const dropDownMenu = document.getElementById("category");
     for( let i=0; i<categories.length ; i++){
         const option = document.createElement("option");
@@ -466,11 +492,15 @@ function makeCategoryMenu(categories){
 
 /**
  * This function add an event listner on the modale overalay so that if we click
- * outside the modale - it close
+ * outside the modale - it closes
  **************************************/
 function clickOutToClose(){
-    document.querySelector(".darkBackGround").addEventListener("click", (event)=>{
-        closeModale();
+    const modale = document.querySelector(".modale");
+    document.querySelector(".modaleBG").addEventListener("click", (event)=>{
+        // this is to prevent the modale to close when we click on the modale itself
+        if (!modale.contains(event.target)) {
+            closeModale();
+        }
     });
 }
 
@@ -528,6 +558,14 @@ function hiddePreview(){
  **************************************/
 function generateImgURL(file){
     return URL.createObjectURL(file);
+}
+
+/**
+ * to enable form button to submit image
+ */
+function allowSubmition(){
+    const sendPhotoButton = document.querySelector(".sendImgButton");
+        sendPhotoButton.disabled = false;
 }
 
 /**
