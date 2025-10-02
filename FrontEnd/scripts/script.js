@@ -1,8 +1,9 @@
-
+import { fetchWorks } from "./scriptAPI.js";
+import { displayModaleGallery, makeCategoryMenu, openModale } from "./scriptModale.js";   
 
 /********** INITIALISATION of the Page *************/
 
-initialise();
+await startUp();
 activateFilterButton();
 
 /********** LOGIN Management ***********************
@@ -29,7 +30,7 @@ editButton.addEventListener("click", () =>{
  * building the filter on the main page with category extracted form the works to be displayed
  * bulding the category menu for the modale add photo screen form.
  */
-async function initialise(){
+async function startUp(){
     await updateBothGallery();
     await buildCategoryFilterFromWorks();
     await makeCategoryMenu();
@@ -125,7 +126,7 @@ function diplayGallery(works){
     console.log("Main Gallery is updated");
 }
 
-/**
+/* *
  * to fetch the data from API and update the gallery by redisplaying it  
  ************************************************************************/
 async function updateGallery(){
@@ -182,3 +183,5 @@ function userLoggedIn(){
         return true;
     }
 }
+
+export{updateBothGallery, buildCategoryFilterFromWorks, activateFilterButton};

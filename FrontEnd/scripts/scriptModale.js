@@ -1,3 +1,8 @@
+import { updateBothGallery, buildCategoryFilterFromWorks, activateFilterButton } from "./script.js";
+import {fetchCategories} from "./scriptAPI.js";
+
+
+
 /*************************
  * Overall Modale Script
  * ***********************/
@@ -126,7 +131,7 @@ function displayModaleGallery(works){
 
         modaleGalleryElement.appendChild(imgCard);
     }
-    addEventListnerOnBinIcon();
+    activate_photo_delete_buttonIcon();
     console.log("Modal mini gallery updated");
 }
 
@@ -417,3 +422,6 @@ function clearFormInput(){
     const imgInput = document.getElementById("image");
     imgInput.value = "";
 }
+
+
+export{makeCategoryMenu, displayModaleGallery, openModale, activate_photo_delete_buttonIcon};

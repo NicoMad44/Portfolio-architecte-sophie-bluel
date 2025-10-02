@@ -25,3 +25,5 @@ async function fetchCategories(){
     console.log(categories);
     return categories;
 }
+
+export { fetchWorks, fetchCategories};
