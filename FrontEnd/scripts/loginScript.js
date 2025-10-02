@@ -1,7 +1,6 @@
-/**** This SCRIPT is for the Login Page only
- * 
- */
-
+/*************************************
+ * SCRIPT is for the Login Page only
+ * ***********************************/
 
 const emailInputElement = document.getElementById("email");
 const submitButton = document.getElementById("submitButton");
@@ -13,11 +12,12 @@ errorMessage.innerText = "Sorry, invalid email and/or password, please try again
 errorMessage.classList.add("errorMessage", "hidden");
 form.appendChild(errorMessage);
 
-// upon teh click the function login is called with the info from users
+// upon the click the function login is called with the info from users
 form.addEventListener("submit", (event)=>{
     event.preventDefault();
     const emailInputElement = document.getElementById("email");
     const passwordInputElement = document.getElementById("password");
+    
     console.log(emailInputElement.value + " - " + passwordInputElement.value);
 
     login(emailInputElement.value, passwordInputElement.value)
@@ -25,8 +25,9 @@ form.addEventListener("submit", (event)=>{
 });
 
 
-/** login()
- * the function make an API request to POST user credential and if in db, put the token received from API in local storage
+/** 
+ * the function make an API request to POST user credential and
+ * if in db, put the token received from API in local storage.
  * @param {string} email : the email entered by the user
  * @param {string} password : the password entered by the user
  */
