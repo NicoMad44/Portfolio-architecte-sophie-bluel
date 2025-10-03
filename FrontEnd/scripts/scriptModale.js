@@ -1,11 +1,12 @@
 import { updateBothGallery, buildCategoryFilterFromWorks, activateFilterButton } from "./script.js";
 import {fetchCategories, deleteWork, sendImg} from "./scriptAPI.js";
 
-
-
 /*************************
  * Overall Modale Script
  * ***********************/
+
+// Build the category menu for the modale 
+await makeCategoryMenu();
 
 // to allow the navigation in the modale between its screen
 activate_modale_nav()
@@ -55,7 +56,7 @@ async function closeModale(){
     // update main gallery page
         await updateBothGallery();
         await buildCategoryFilterFromWorks();
-        activateFilterButton();
+        await activateFilterButton();
 }
 
 /**
@@ -95,8 +96,6 @@ function activate_modale_nav(){
         displayModaleNewPhotoScreen();
     });
 }
-
-
 
 /************************************************************
  * MiniPhoto Modale Gallery Screen readiness + Functionality
@@ -371,8 +370,6 @@ function allowSubmition(){
         sendPhotoButton.disabled = false;
 }
 
-
-
 /** 
  * This function empty the title field fo the form 
  *****************************************************************************/
@@ -384,4 +381,4 @@ function clearFormInput(){
 }
 
 
-export{makeCategoryMenu, displayModaleGallery, openModale, activate_photo_delete_buttonIcon};
+export{ displayModaleGallery, openModale, activate_photo_delete_buttonIcon};

@@ -1,40 +1,40 @@
 import { fetchWorks } from "./scriptAPI.js";
-import { displayModaleGallery, makeCategoryMenu, openModale } from "./scriptModale.js";   
+import { displayModaleGallery, openModale } from "./scriptModale.js";   
 
-/********** INITIALISATION of the Page *************/
-
-await startUp();
-activateFilterButton();
-
-/********** LOGIN Management ***********************
-Check if user logedin and add the admin modification button if it is the case
-for now: we use local storage but there might be a better way tbc
-*/
-if(userLoggedIn()){
-    displayEditButton();
-}
-
-// add event listner on the "edit button" to open the modale
-const editButton = document.querySelector(".editButton");
-editButton.addEventListener("click", () =>{
-    openModale();
-});
+/****************************
+ * Overall Main Page Script
+ * **************************/
 
 
-/******** FONCTIONS ***********/
+//  INITIALISATION of the Page
 
-/**
- * to initialise the page: by
- * fetching the info from the api;
- * building the picture galleries on the main screen and on the modal;
- * building the filter on the main page with category extracted form the works to be displayed
- * bulding the category menu for the modale add photo screen form.
- */
-async function startUp(){
+    // display the gallery by fecting info from the API
     await updateBothGallery();
+    // Build, display and activate the filter buttons based on the Information form the API WORKS
     await buildCategoryFilterFromWorks();
-    await makeCategoryMenu();
-}
+    await activateFilterButton();
+    // add event listner on the "edit button" to open the modale
+    const editButton = document.querySelector(".editButton");
+    editButton.addEventListener("click", () =>{
+        openModale();
+    });
+
+
+//  LOGIN Management 
+
+    //Check if user logedin and add the admin modification button if it is the case
+    //for now: we use local storage but there might be a better way tbc
+
+    if(userLoggedIn()){
+        // display editButton
+        const editButton = document.querySelector(".editButton");
+        editButton.classList.remove("hidden");
+    }
+
+
+/*******************************
+ * Overall Main Page FUNCTIONS
+ * *****************************/
 
 /**
  * this function extract and dedup the category from the API works info and build the category filter button
@@ -89,13 +89,21 @@ async function buildCategoryFilterFromWorks(){
  * to add the event listener on all filter button
  * on the click -> filter the photo according to which button clicked
  */
-function activateFilterButton(){
+async function activateFilterButton(){
     const filterButtonsElement =document.querySelectorAll(".filterZone button");
     //use the dataset.id to know which button is clicked and call the function
     for(let i=0; i<filterButtonsElement.length; i++){
         filterButtonsElement[i].addEventListener("click", async (event)=>{
-            const category_id = filterButtonsElement[i].dataset.id;
-            await filterAndDisplayWork(category_id);
+            const cat_id = filterButtonsElement[i].dataset.id;
+            const works = await fetchWorks();
+            if(cat_id==0){
+                diplayGallery(works);
+            } else {
+                const filteredWorks = works.filter(function(work){
+                    return work.categoryId == cat_id;
+                })
+                diplayGallery(filteredWorks);
+            }
         })
     }
 }
@@ -126,14 +134,6 @@ function diplayGallery(works){
     console.log("Main Gallery is updated");
 }
 
-/* *
- * to fetch the data from API and update the gallery by redisplaying it  
- ************************************************************************/
-async function updateGallery(){
-    const updatedWorks = await fetchWorks();
-    diplayGallery(updatedWorks);
-}
-
 /**
  * to fetch work from the API and update both photos gallery
  */
@@ -143,31 +143,6 @@ async function updateBothGallery(){
     displayModaleGallery(updatedWorks);
 }
 
-/**
- * to diplay the galery but only for a specific category 
- * taking the category - id as parameter
- * @param {number} cat_id: ID of the category of work user wants to see
- **************************************/
-async function filterAndDisplayWork(cat_id){
-    const works = await fetchWorks();
-    if(cat_id==0){
-        diplayGallery(works);
-    } else {
-        const filteredWorks = works.filter(function(work){
-            return work.categoryId == cat_id;
-        })
-        diplayGallery(filteredWorks);
-    }
-}
-
-/**
- * to diplay the modification button that will allow the modal to be displayed
- * this function is called only if the user is logged in
- **************************************/
-function displayEditButton(){
-    const editButton = document.querySelector(".editButton");
-    editButton.classList.remove("hidden");
-}
 
 /**
  * check if user if logged in and return true if he is 
