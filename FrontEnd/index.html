@@ -9,21 +9,23 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	
+	
 </head>
 <body>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
-			<li>projets</li>
-			<li>contact</li>
-			<li>login</li>
+			<li><a href="#portfolio" class="nav-link">projets</a></li>
+			<li><a href="#contact" class="nav-link">contact</a></li>
+			<li><a href="login.html" class="nav-link">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
 </header>
 <main>
-	<section id="introduction">
+	<section id="introduction" >
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">
 		</figure>
@@ -35,52 +37,17 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<div id="portfolio-titleZone">
+			<h2>Mes Projets</h2>
+			<button class="hidden noShapeButton editButton">
+				<img src="./assets/icons/editIcon.png" alt="edit icon">
+				modifier
+			</button>
+		</div>
+		<div class="filterZone">
+			<button data-id="0">Tous</button>
+		</div>
 		<div class="gallery">
-			<figure>
-				<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
-				<figcaption>Abajour Tahina</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-v.png" alt="Appartement Paris V">
-				<figcaption>Appartement Paris V</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/restaurant-sushisen-londres.png" alt="Restaurant Sushisen - Londres">
-				<figcaption>Restaurant Sushisen - Londres</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/la-balisiere.png" alt="Villa “La Balisiere” - Port Louis">
-				<figcaption>Villa “La Balisiere” - Port Louis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/structures-thermopolis.png" alt="Structures Thermopolis">
-				<figcaption>Structures Thermopolis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-x.png" alt="Appartement Paris X">
-				<figcaption>Appartement Paris X</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/le-coteau-cassis.png" alt="Pavillon “Le coteau” - Cassis">
-				<figcaption>Pavillon “Le coteau” - Cassis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/villa-ferneze.png" alt="Villa Ferneze - Isola d’Elba">
-				<figcaption>Villa Ferneze - Isola d’Elba</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-xviii.png" alt="Appartement Paris XVIII">
-				<figcaption>Appartement Paris XVIII</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/bar-lullaby-paris.png" alt="Bar “Lullaby” - Paris">
-				<figcaption>Bar “Lullaby” - Paris</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/hotel-first-arte-new-delhi.png" alt="Hotel First Arte - New Delhi">
-				<figcaption>Hotel First Arte - New Delhi</figcaption>
-			</figure>
 		</div>
 	</section>
 	<section id="contact">
@@ -105,5 +72,50 @@
 		</ul>
 	</nav>
 </footer>
+
+<aside class="modaleBG hidden" aria-labelledby="modale_title">
+	<div class="modale hidden">
+		<div class="modale-nav">
+			<img src="./assets/icons/backArrow.png" alt="back arrow to comeback on previous modale screen" class="arrowIcon hidden">
+			<button class="noShapeButton"><img src="./assets/icons/cross.png" alt="cross to close modale window" class="crossIcon"></button>
+		</div>
+		<div class="modale-screen galleryScreen ">
+			<h3 id="modale_title" class="modale-title">Galerie photo</h3>
+			<div class="modale-gallery"></div>
+			<div class="modale-footer">
+				<button class="addPhotoButton">Ajouter une photo</button>
+			</div>
+		</div>	
+		<div class="modale-screen newPhotoScreen hidden">
+			<h3 class="modale-title">Ajout photo</h3>
+			<div class="importPhotoZone">
+				<img src="#" class="imgPreview hidden" alt="image preview">
+				<div class="zoneToHideAfterSelection">
+					<img src="./assets/icons/pictureIcon.png" alt="picture icon" class="pictureIcon">
+					<button class="selectPhotoButton">+ Ajouter photo</button>
+					<p>jpg, png : 4mo max</p>
+				</div>
+			</div>
+			<form class="modale-newPhotoForm">
+				<input type="file" id="image" name="image" accept="image/png, image/jpeg">
+				<label for="title">Titre</label>
+				<input type="text" name="title" id="title">
+				<label for="category">Catégorie</label>
+				<select name="category" id="category">
+				</select>
+				<div class="modale-footer">
+					<input type="submit" value="Valider" disabled class="sendImgButton">	
+				</div>
+			</form>	
+		</div>
+	</div>
+</aside>
+
+<!-- <script src="./scripts/scriptAPI.js"></script>
+<script src="./scripts/scriptModale.js"></script> -->
+<script type="module" src="./scripts/script.js"></script>
+
+
+
 </body>
 </html>
