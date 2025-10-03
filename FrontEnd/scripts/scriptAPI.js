@@ -26,4 +26,48 @@ async function fetchCategories(){
     return categories;
 }
 
-export { fetchWorks, fetchCategories};
+/********function deleteWork()
+ * This function make a DELETE request to the API and delete work of work_id from API
+ **************************************/
+async function deleteWork(work_id){
+    fetch(`http://localhost:5678/api/works/${work_id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.localStorage.getItem("1")}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Network response was not ok');
+        }
+        console.log('Resource deleted successfully');
+    })
+    .catch(error => {
+        console.error('There was a problem with the DELETE request:', error.message);
+    });
+}
+
+/** 
+ * This function send a POST request to the API and upload the info contains in the formData
+ *****************************************************************************/
+async function sendImg(formData){
+    fetch(`http://localhost:5678/api/works`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${window.localStorage.getItem("1")}`
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+        throw new Error('Network response was not ok');
+        }
+        console.log('Resource added successfully');
+    })
+    .catch(error => {
+        console.error('There was a problem with the POST request:', error.message);
+    });
+}  
+
+export { fetchWorks, fetchCategories, deleteWork, sendImg};
