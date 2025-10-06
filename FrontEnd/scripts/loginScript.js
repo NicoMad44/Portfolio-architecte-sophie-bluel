@@ -8,7 +8,7 @@ const form = document.querySelector("form");
 
 // Creation of the error message to be un-hidden when requiered
 const errorMessage = document.createElement("p");
-errorMessage.innerText = "Sorry, invalid email and/or password, please try again.";
+errorMessage.innerText = "Erreur dans l’identifiant ou le mot de passe";
 errorMessage.classList.add("errorMessage", "hidden");
 form.appendChild(errorMessage);
 
