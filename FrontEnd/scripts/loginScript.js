@@ -1,9 +1,7 @@
 /*************************************
- * SCRIPT is for the Login Page only
+ * Loggin Related script
  * ***********************************/
 
-const emailInputElement = document.getElementById("email");
-const submitButton = document.getElementById("submitButton");
 const form = document.querySelector("form");
 
 // Creation of the error message to be un-hidden when requiered
@@ -51,6 +49,38 @@ async function login(email, password) {
     // "data" contains the token if login succeeded
     errorMessage.classList.add("hidden");
     window.localStorage.setItem("userToken", data.token);
+    updateNavLinks();
     window.location.href = 'index.html';
   }
 
+/**
+ * check if user if logged in and return true if he is 
+ * @returns {boolean} : true if logged in, flase if not
+ **************************************/
+function userLoggedIn(){
+  if (!window.localStorage.getItem("userToken")){
+      console.log("Not Logged-in");
+      return false;
+  } else {
+      console.log("Logged-in");
+      console.log(window.localStorage.getItem("userToken"));
+      return true;
+  }
+}
+
+/**
+ * to change the nav link to show logout when the user is loged in
+ */
+function updateNavLinks(){
+  const navLinksLogin = document.querySelectorAll(".loginLink");
+  console.log(navLinksLogin);
+  navLinksLogin.forEach(link => {
+    if(userLoggedIn()){
+      link.innerText = "Logout";
+    } else {
+      link.innerText = "login";
+    } 
+  });
+}
+
+export { userLoggedIn, updateNavLinks };

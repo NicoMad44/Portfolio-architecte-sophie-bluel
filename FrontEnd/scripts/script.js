@@ -1,5 +1,7 @@
+import { userLoggedIn, updateNavLinks } from "./loginScript.js";
 import { fetchWorks } from "./scriptAPI.js";
-import { displayModaleGallery, openModale } from "./scriptModale.js";   
+import { displayModaleGallery, openModale } from "./scriptModale.js";
+
 
 /****************************
  * Overall Main Page Script
@@ -22,13 +24,20 @@ import { displayModaleGallery, openModale } from "./scriptModale.js";
 
 //  LOGIN Management 
 
-    //Check if user logedin and add the admin modification button if it is the case
-    //for now: we use local storage but there might be a better way tbc
+    //Check if user logedin and 
+    //add the admin modification button + update login nav link to logout
+    // + add a event listner on logout -> to remove toekn from local storage
 
     if(userLoggedIn()){
         // display editButton
         const editButton = document.querySelector(".editButton");
         editButton.classList.remove("hidden");
+        updateNavLinks();
+        const logoutNavLink = document.querySelector(".loginLink");
+        logoutNavLink.addEventListener("click", ()=>{
+            window.localStorage.removeItem("userToken");
+            updateNavLinks();
+        })
     }
 
 
@@ -144,19 +153,6 @@ async function updateBothGallery(){
 }
 
 
-/**
- * check if user if logged in and return true if he is 
- * @returns {boolean} : true if logged in, flase if not
- **************************************/
-function userLoggedIn(){
-    if (!window.localStorage.getItem("userToken")){
-        console.log("Not Logged-in");
-        return false;
-    } else {
-        console.log("Logged-in");
-        console.log(window.localStorage.getItem("userToken"));
-        return true;
-    }
-}
+
 
 export{updateBothGallery, buildCategoryFilterFromWorks, activateFilterButton};
