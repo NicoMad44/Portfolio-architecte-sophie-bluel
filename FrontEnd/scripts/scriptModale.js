@@ -1,4 +1,4 @@
-import { updateBothGallery, buildCategoryFilterFromWorks, activateFilterButton } from "./script.js";
+import { updateBothGallery, activateFilterButton } from "./script.js";
 import {fetchCategories, deleteWork, sendImg} from "./scriptAPI.js";
 
 /*************************
@@ -12,7 +12,7 @@ await makeCategoryMenu();
 activate_modale_nav()
 
 // add event listners on all bin icon button to deleteWork
-activate_photo_delete_buttonIcon();
+activatePhotoDeleteButtonIcon();
 
 // add event listner on the select photo button of the form
 activate_new_photo_form()
@@ -55,8 +55,7 @@ async function closeModale(){
         removeErrorMessage();
     // update main gallery page
         await updateBothGallery();
-        await buildCategoryFilterFromWorks();
-        await activateFilterButton();
+        activateFilterButton();
 }
 
 /**
@@ -130,7 +129,7 @@ function displayModaleGallery(works){
 
         modaleGalleryElement.appendChild(imgCard);
     }
-    activate_photo_delete_buttonIcon();
+    activatePhotoDeleteButtonIcon();
     console.log("Modal mini gallery updated");
 }
 
@@ -168,7 +167,7 @@ function diplayModaleGalleryScreen(){
  * to add eventlisnter on all the bin Icon of the modal galery screen
  * when cliked: the work is deleted and the img is removed form screen
  **************************************/
-function activate_photo_delete_buttonIcon(){
+function activatePhotoDeleteButtonIcon(){
     const binIconElements = document.querySelectorAll(".binIcon");
     for (let i=0; i<binIconElements.length; i++){
         binIconElements[i].addEventListener("click", async (event)=>{
@@ -269,8 +268,6 @@ function activate_new_photo_form(){
         event.preventDefault();
         const formData = await createPostData();
         await sendImg(formData);
-        await updateBothGallery();
-        await buildCategoryFilterFromWorks();
         closeModale(); 
     });
 }
@@ -381,4 +378,4 @@ function clearFormInput(){
 }
 
 
-export{ displayModaleGallery, openModale, activate_photo_delete_buttonIcon};
+export{ displayModaleGallery, openModale, activatePhotoDeleteButtonIcon};

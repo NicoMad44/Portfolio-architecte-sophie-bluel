@@ -1,5 +1,5 @@
 import { userLoggedIn, updateNavLinks } from "./loginScript.js";
-import { fetchWorks } from "./scriptAPI.js";
+import { fetchCategories, fetchWorks } from "./scriptAPI.js";
 import { displayModaleGallery, openModale } from "./scriptModale.js";
 
 
@@ -10,11 +10,17 @@ import { displayModaleGallery, openModale } from "./scriptModale.js";
 
 //  INITIALISATION of the Page
 
-    // display the gallery by fecting info from the API
-    await updateBothGallery();
+    // fetch info from API
+    const works = await fetchWorks();
+    const categories = await fetchCategories();
+
+    // display the Main gallery
+    diplayGallery(works);
+    // create the element for the modale gallery
+    displayModaleGallery(works);
     // Build, display and activate the filter buttons based on the Information form the API WORKS
-    await buildCategoryFilterFromWorks();
-    await activateFilterButton();
+    buildCategoryFilterFromCategories(categories);
+    activateFilterButton();
     // add event listner on the "edit button" to open the modale
     const editButton = document.querySelector(".editButton");
     editButton.addEventListener("click", () =>{
@@ -46,7 +52,7 @@ import { displayModaleGallery, openModale } from "./scriptModale.js";
  * *****************************/
 
 /**
- * this function extract and dedup the category from the API works info and build the category filter button
+ * NOT IN USE - this function extract and dedup the category from the API works info and build the category filter button
  * @param {array} works 
  */
 async function buildCategoryFilterFromWorks(){
@@ -72,39 +78,35 @@ async function buildCategoryFilterFromWorks(){
     console.log("filter updated")
 }
 
-    /*NOTE: there is an other way to get the category - by using the Gategory API directly
-    but we might have a button filter for a category not usefull in case there is not photo of that category in the gallery
-    /* second Function (not in use): creation of the filter button based on a new API feed to get the category data */
-        /**
-         * this function take the category from the api category info
-         * @param {array} categories 
-         */
-        function buildCategoryFilterFromCategories(categories){
-            const filterZone = document.querySelector(".filterZone");
-            filterZone.innerHTML="";
-            const filterButtonTous = document.createElement("button");
-            filterButtonTous.innerText="Tous";
-            filterButtonTous.dataset.id = 0;
-            filterZone.appendChild(filterButtonTous);
-            for (let i=0; i<categories.length;i++){
-                const filterButton = document.createElement("button");
-                filterButton.innerText = categories[i].name;
-                filterButton.dataset.id = categories[i].id;
-                filterZone.appendChild(filterButton);
-            } 
-        }
+/**
+ * this function take the category from the api category info
+ * @param {array} categories 
+ */
+function buildCategoryFilterFromCategories(categories){
+    const filterZone = document.querySelector(".filterZone");
+    filterZone.innerHTML="";
+    const filterButtonTous = document.createElement("button");
+    filterButtonTous.innerText="Tous";
+    filterButtonTous.dataset.id = 0;
+    filterZone.appendChild(filterButtonTous);
+    for (let i=0; i<categories.length;i++){
+        const filterButton = document.createElement("button");
+        filterButton.innerText = categories[i].name;
+        filterButton.dataset.id = categories[i].id;
+        filterZone.appendChild(filterButton);
+    } 
+}
 
 /**
  * to add the event listener on all filter button
  * on the click -> filter the photo according to which button clicked
  */
-async function activateFilterButton(){
+function activateFilterButton(){
     const filterButtonsElement =document.querySelectorAll(".filterZone button");
     //use the dataset.id to know which button is clicked and call the function
     for(let i=0; i<filterButtonsElement.length; i++){
-        filterButtonsElement[i].addEventListener("click", async (event)=>{
+        filterButtonsElement[i].addEventListener("click", (event)=>{
             const cat_id = filterButtonsElement[i].dataset.id;
-            const works = await fetchWorks();
             if(cat_id==0){
                 diplayGallery(works);
             } else {
@@ -152,7 +154,4 @@ async function updateBothGallery(){
     displayModaleGallery(updatedWorks);
 }
 
-
-
-
-export{updateBothGallery, buildCategoryFilterFromWorks, activateFilterButton};
+export{updateBothGallery, activateFilterButton};
