@@ -10,23 +10,40 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
 
 //  INITIALISATION of the Page
     console.log("index Page loading");
-    // fetch info from API
-    const works = await fetchWorks();
+    
+    // fetch info from API & store them in Local Storage
+
+    let works = await fetchWorks();
+    console.log(works);
+    /* works = works.filter(function(work){
+        return !(work.id == 77);
+    })
+    console.log(works);
+    const localWorks = new Map();
+    works.forEach(work => {
+        localWorks.set(work.id,work);
+    });
+    console.log("********End test*********"); */
     window.localStorage.setItem("storedWorks", JSON.stringify(works));
     const categories = await fetchCategories();
+    console.log(categories);
     window.localStorage.setItem("storedCategories", JSON.stringify(categories));
 
     // display the Main gallery
-    let storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
-    diplayGallery(storedWorks);
+    //let storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
+    diplayGallery(works);
+
     // create the element for the modale gallery
-    displayModaleGallery(storedWorks);
+    displayModaleGallery(works);
+
     // Build the category menu for the modale
-    let storedCategories = JSON.parse(window.localStorage.getItem("storedCategories"));
-    makeCategoryMenu(storedCategories);
-    // Build, display and activate the filter buttons based on the Information form the API WORKS
-    buildCategoryFilterFromCategories(storedCategories);
+    //let storedCategories = JSON.parse(window.localStorage.getItem("storedCategories"));
+    makeCategoryMenu(categories);
+
+    // Build, display and activate the filter buttons
+    buildCategoryFilterFromCategories(categories);
     activateFilterButton();
+
     // add event listner on the "edit button" to open the modale
     const editButton = document.querySelector(".editButton");
     editButton.addEventListener("click", () =>{
@@ -36,8 +53,8 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
 
 //  LOGIN Management 
 
-    //Check if user logedin and 
-    //add the admin modification button + update login nav link to logout
+    //Check if user logedin - if yes:
+    //  add the admin modification button + update login nav link to logout
     // + add a event listner on logout -> to remove toekn from local storage
 
     if(userLoggedIn()){
@@ -115,11 +132,11 @@ function activateFilterButton(){
     for(let i=0; i<filterButtonsElement.length; i++){
         filterButtonsElement[i].addEventListener("click", (event)=>{
             const cat_id = filterButtonsElement[i].dataset.id;
-            const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
+            //const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
             if(cat_id==0){
-                diplayGallery(storedWorks);
+                diplayGallery(works);
             } else {
-                const filteredWorks = storedWorks.filter(function(work){
+                const filteredWorks = works.filter(function(work){
                     return work.categoryId == cat_id;
                 })
                 diplayGallery(filteredWorks);
@@ -158,7 +175,7 @@ function diplayGallery(works){
  * update both photos gallery using the works in local storage
  */
 function updateBothGallery(){
-    const updatedWorks = JSON.parse(window.localStorage.getItem("works"));
+    const updatedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
     diplayGallery(updatedWorks);
     displayModaleGallery(updatedWorks);
 }
@@ -170,11 +187,19 @@ function updateBothGallery(){
  * @param {Int} workId: id of the work to be removed or added
  */
 async function updateStoredWorks(){
-    window.localStorage.removeItem("works");
+    window.localStorage.removeItem("storedWorks");
     const updatedWorks = await fetchWorks();
-    window.localStorage.setItem("works", JSON.stringify(updatedWorks));
+    window.localStorage.setItem("storedWorks", JSON.stringify(updatedWorks));
     console.log("local Storage updated")
 }
 
+function removeWorkFromLocalStorage(work_id){
+    const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
+    const filteredWorks = storedWorks.filter(work => !(work.id == work_id));
+    window.localStorage.removeItem("storedWorks");
+    window.localStorage.setItem("storedWorks",JSON.stringify(filteredWorks));
+    console.log(`work id : ${work_id} has been removed from local storage`);
+}
 
-export{updateBothGallery, activateFilterButton, updateStoredWorks};
+
+export{updateBothGallery, activateFilterButton, updateStoredWorks, removeWorkFromLocalStorage};

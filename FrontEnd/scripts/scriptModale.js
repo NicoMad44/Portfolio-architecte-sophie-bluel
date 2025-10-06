@@ -1,12 +1,10 @@
-import { updateBothGallery, activateFilterButton, updateStoredWorks } from "./script.js";
+import { updateBothGallery, activateFilterButton, updateStoredWorks, removeWorkFromLocalStorage } from "./script.js";
 import {fetchCategories, deleteWork, sendImg} from "./scriptAPI.js";
+
 
 /*************************
  * Overall Modale Script
  * ***********************/
-
-
-
 // to allow the navigation in the modale between its screen
 activateModaleNav()
 
@@ -55,7 +53,7 @@ async function closeModale(){
         clearFormInput();
         removeErrorMessage();
     // update main gallery page
-        await updateStoredWorks();
+        //await updateStoredWorks();
         updateBothGallery();
     console.log("modale Closed");
 }
@@ -176,6 +174,7 @@ function activatePhotoDeleteButtonIcon(){
             const workId = event.target.dataset.id;
             console.log(`work to be deleted is work id: ${workId}`);
             await deleteWork(workId);
+            removeWorkFromLocalStorage(workId);
             const imgCard = event.target.parentElement;
             imgCard.remove();
         });
@@ -243,7 +242,7 @@ function activateNewPhotoForm(){
         const file = event.target.files[0];
         if(verifiedPhoto(file)){
             displayPreview(file);
-            //allowSubmition();
+            allowSubmition();
         } else {
             displayErrorMessage(file);
         }
@@ -266,8 +265,8 @@ function activateNewPhotoForm(){
         event.preventDefault();
         const formData = await createPostData();
         await sendImg(formData);
-        await updateStoredWorks();
-        closeModale(); 
+        //await updateStoredWorks();
+        //closeModale(); 
     });
 }
 
@@ -351,7 +350,8 @@ async function createPostData(){
     const formData = new FormData(newPhotoForm);
     const categoryName = formData.get("category");
     //finding the category id from the category name:
-    const categories = await fetchCategories();
+    const categories = JSON.parse(window.localStorage.getItem("storedCategories"));
+    console.log(categories);
     const found = categories.find(item => item.name === categoryName);
     const categoryId = found ? found.id : undefined;
     formData.set("category", categoryId);
@@ -377,4 +377,4 @@ function clearFormInput(){
 }
 
 
-export{ displayModaleGallery, openModale, activatePhotoDeleteButtonIcon, makeCategoryMenu};
+export{ displayModaleGallery, openModale, activatePhotoDeleteButtonIcon, makeCategoryMenu, closeModale};

@@ -1,3 +1,6 @@
+import { updateStoredWorks } from "./script.js";   
+import {closeModale} from "./scriptModale.js";
+
 /********************************************
  * Functions used to fetch data from the API
  * ******************************************/
@@ -13,6 +16,7 @@ async function fetchWorks(){
     console.log(works);
     return works;
 }
+
 
 /**
  * to fetch the categories from the API
@@ -59,11 +63,13 @@ async function sendImg(formData){
         },
         body: formData
     })
-    .then(response => {
+    .then(async response => {
         if (!response.ok) {
         throw new Error('Network response was not ok');
         }
         console.log('Resource added successfully');
+        await updateStoredWorks();
+        closeModale();
     })
     .catch(error => {
         console.error('There was a problem with the POST request:', error.message);
