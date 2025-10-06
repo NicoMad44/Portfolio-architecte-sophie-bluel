@@ -50,7 +50,7 @@ async function login(email, password) {
     const data = await response.json();
     // "data" contains the token if login succeeded
     errorMessage.classList.add("hidden");
-    window.localStorage.setItem(data.userId, data.token);
+    window.localStorage.setItem("userToken", data.token);
     window.location.href = 'index.html';
   }
 

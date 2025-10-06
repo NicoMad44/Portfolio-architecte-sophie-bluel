@@ -149,12 +149,12 @@ async function updateBothGallery(){
  * @returns {boolean} : true if logged in, flase if not
  **************************************/
 function userLoggedIn(){
-    if (!window.localStorage.getItem("1")){
+    if (!window.localStorage.getItem("userToken")){
         console.log("Not Logged-in");
         return false;
     } else {
         console.log("Logged-in");
-        console.log(window.localStorage.getItem("1"));
+        console.log(window.localStorage.getItem("userToken"));
         return true;
     }
 }

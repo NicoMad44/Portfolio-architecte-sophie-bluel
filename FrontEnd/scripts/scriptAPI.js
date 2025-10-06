@@ -34,7 +34,7 @@ async function deleteWork(work_id){
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${window.localStorage.getItem("1")}`
+            'Authorization': `Bearer ${window.localStorage.getItem("userToken")}`
         }
     })
     .then(response => {
@@ -55,7 +55,7 @@ async function sendImg(formData){
     fetch(`http://localhost:5678/api/works`, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${window.localStorage.getItem("1")}`
+            'Authorization': `Bearer ${window.localStorage.getItem("userToken")}`
         },
         body: formData
     })
