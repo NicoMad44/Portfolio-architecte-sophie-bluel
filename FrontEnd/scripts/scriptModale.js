@@ -1,22 +1,23 @@
-import { updateBothGallery, activateFilterButton } from "./script.js";
+import { updateBothGallery, activateFilterButton, updateStoredWorks } from "./script.js";
 import {fetchCategories, deleteWork, sendImg} from "./scriptAPI.js";
 
 /*************************
  * Overall Modale Script
  * ***********************/
 
-// Build the category menu for the modale 
-await makeCategoryMenu();
+
 
 // to allow the navigation in the modale between its screen
-activate_modale_nav()
+activateModaleNav()
 
 // add event listners on all bin icon button to deleteWork
 activatePhotoDeleteButtonIcon();
 
 // add event listner on the select photo button of the form
-activate_new_photo_form()
+activateNewPhotoForm()
 
+// add event listner on the modale Bak Ground to close when we click on it
+clickOutToClose();
 
 /***************************
  * Overall Modale FUNCTIONS
@@ -33,7 +34,7 @@ function openModale(){
     const darkBackGroundElement = document.querySelector("aside.modaleBG");
     darkBackGroundElement.classList.remove("hidden");
     diplayModaleGalleryScreen();
-    clickOutToClose();
+
 }
 
 /**
@@ -48,14 +49,15 @@ async function closeModale(){
     modaleElement.classList.add("hidden");
     const darkBackGroundElement = document.querySelector(".modaleBG");
     darkBackGroundElement.classList.add("hidden");
-
+    console.log("modale Closing");
     // clean form
         hiddePreview();
         clearFormInput();
         removeErrorMessage();
     // update main gallery page
-        await updateBothGallery();
-        activateFilterButton();
+        await updateStoredWorks();
+        updateBothGallery();
+    console.log("modale Closed");
 }
 
 /**
@@ -76,7 +78,7 @@ function clickOutToClose(){
  * this function add event listner on the navigation icon of the modal
  * to navigate between the 2 screen of the modale
  */
-function activate_modale_nav(){
+function activateModaleNav(){
     // add event listner on cross icon to close the modale
     const crossIcon = document.querySelector(".crossIcon");
     crossIcon.addEventListener("click", async ()=>{
@@ -171,17 +173,14 @@ function activatePhotoDeleteButtonIcon(){
     const binIconElements = document.querySelectorAll(".binIcon");
     for (let i=0; i<binIconElements.length; i++){
         binIconElements[i].addEventListener("click", async (event)=>{
-            const work_id = event.target.dataset.id;
-            console.log(work_id);
-            await deleteWork(work_id);
+            const workId = event.target.dataset.id;
+            console.log(`work to be deleted is work id: ${workId}`);
+            await deleteWork(workId);
             const imgCard = event.target.parentElement;
             imgCard.remove();
         });
     }
 }
-
-
-
 
 
 /***********************************************
@@ -212,10 +211,9 @@ function displayModaleNewPhotoScreen(){
 
 /**
  * This function populate the drop down menu category of the modale,
- * fetching the category from the API
+ * @param {array} categories: categorie to display in the drop down menu
  **************************************/
-async function makeCategoryMenu(){
-    const categories = await fetchCategories();
+async function makeCategoryMenu(categories){
     const dropDownMenu = document.getElementById("category");
     for( let i=0; i<categories.length ; i++){
         const option = document.createElement("option");
@@ -224,7 +222,7 @@ async function makeCategoryMenu(){
         option.innerText = categories[i].name;
         dropDownMenu.appendChild(option);
     }
-    console.log("menu updated")
+    console.log("Modale Drop Down menu created")
 }
 
 /**
@@ -233,7 +231,7 @@ async function makeCategoryMenu(){
  * one on the title field of the form
  * one on the submit button on the form
  */
-function activate_new_photo_form(){
+function activateNewPhotoForm(){
     // add event listner on the select a photo button
     const selectPhotoButton = document.querySelector(".importPhotoZone .selectPhotoButton");
     const inputImgElement = document.getElementById("image");
@@ -245,7 +243,7 @@ function activate_new_photo_form(){
         const file = event.target.files[0];
         if(verifiedPhoto(file)){
             displayPreview(file);
-            allowSubmition();
+            //allowSubmition();
         } else {
             displayErrorMessage(file);
         }
@@ -268,6 +266,7 @@ function activate_new_photo_form(){
         event.preventDefault();
         const formData = await createPostData();
         await sendImg(formData);
+        await updateStoredWorks();
         closeModale(); 
     });
 }
@@ -378,4 +377,4 @@ function clearFormInput(){
 }
 
 
-export{ displayModaleGallery, openModale, activatePhotoDeleteButtonIcon};
+export{ displayModaleGallery, openModale, activatePhotoDeleteButtonIcon, makeCategoryMenu};

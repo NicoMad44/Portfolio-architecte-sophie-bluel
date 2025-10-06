@@ -1,6 +1,6 @@
 import { userLoggedIn, updateNavLinks } from "./loginScript.js";
 import { fetchCategories, fetchWorks } from "./scriptAPI.js";
-import { displayModaleGallery, openModale } from "./scriptModale.js";
+import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModale.js";
 
 
 /****************************
@@ -9,17 +9,23 @@ import { displayModaleGallery, openModale } from "./scriptModale.js";
 
 
 //  INITIALISATION of the Page
-
+    console.log("index Page loading");
     // fetch info from API
     const works = await fetchWorks();
+    window.localStorage.setItem("storedWorks", JSON.stringify(works));
     const categories = await fetchCategories();
+    window.localStorage.setItem("storedCategories", JSON.stringify(categories));
 
     // display the Main gallery
-    diplayGallery(works);
+    let storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
+    diplayGallery(storedWorks);
     // create the element for the modale gallery
-    displayModaleGallery(works);
+    displayModaleGallery(storedWorks);
+    // Build the category menu for the modale
+    let storedCategories = JSON.parse(window.localStorage.getItem("storedCategories"));
+    makeCategoryMenu(storedCategories);
     // Build, display and activate the filter buttons based on the Information form the API WORKS
-    buildCategoryFilterFromCategories(categories);
+    buildCategoryFilterFromCategories(storedCategories);
     activateFilterButton();
     // add event listner on the "edit button" to open the modale
     const editButton = document.querySelector(".editButton");
@@ -41,11 +47,13 @@ import { displayModaleGallery, openModale } from "./scriptModale.js";
         updateNavLinks();
         const logoutNavLink = document.querySelector(".loginLink");
         logoutNavLink.addEventListener("click", ()=>{
+            // if user click on "logout" the token is removed from local storage
             window.localStorage.removeItem("userToken");
             updateNavLinks();
         })
     }
 
+    console.log("index Page loaded");
 
 /*******************************
  * Overall Main Page FUNCTIONS
@@ -107,10 +115,11 @@ function activateFilterButton(){
     for(let i=0; i<filterButtonsElement.length; i++){
         filterButtonsElement[i].addEventListener("click", (event)=>{
             const cat_id = filterButtonsElement[i].dataset.id;
+            const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
             if(cat_id==0){
-                diplayGallery(works);
+                diplayGallery(storedWorks);
             } else {
-                const filteredWorks = works.filter(function(work){
+                const filteredWorks = storedWorks.filter(function(work){
                     return work.categoryId == cat_id;
                 })
                 diplayGallery(filteredWorks);
@@ -146,12 +155,26 @@ function diplayGallery(works){
 }
 
 /**
- * to fetch work from the API and update both photos gallery
+ * update both photos gallery using the works in local storage
  */
-async function updateBothGallery(){
-    const updatedWorks = await fetchWorks();
+function updateBothGallery(){
+    const updatedWorks = JSON.parse(window.localStorage.getItem("works"));
     diplayGallery(updatedWorks);
     displayModaleGallery(updatedWorks);
 }
 
-export{updateBothGallery, activateFilterButton};
+
+/**
+ * works on the local storage by fetching the info from the API and replacing the current local storage
+ * @param {array of work} works
+ * @param {Int} workId: id of the work to be removed or added
+ */
+async function updateStoredWorks(){
+    window.localStorage.removeItem("works");
+    const updatedWorks = await fetchWorks();
+    window.localStorage.setItem("works", JSON.stringify(updatedWorks));
+    console.log("local Storage updated")
+}
+
+
+export{updateBothGallery, activateFilterButton, updateStoredWorks};

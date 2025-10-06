@@ -59,27 +59,28 @@ async function login(email, password) {
  **************************************/
 function userLoggedIn(){
   if (!window.localStorage.getItem("userToken")){
-      console.log("Not Logged-in");
       return false;
   } else {
-      console.log("Logged-in");
-      console.log(window.localStorage.getItem("userToken"));
       return true;
   }
 }
 
 /**
- * to change the nav link to show logout when the user is loged in
+ * to change the nav link to show logout when the user is loged in 
+ * and loggin when the user is not logged in
  */
 function updateNavLinks(){
   const navLinksLogin = document.querySelectorAll(".loginLink");
-  console.log(navLinksLogin);
   navLinksLogin.forEach(link => {
     if(userLoggedIn()){
       link.innerText = "Logout";
+      console.log("Logged-in");
+      console.log(window.localStorage.getItem("userToken"));
     } else {
+      console.log("Not Logged-in");
       link.innerText = "login";
     } 
+  console.log("navigation linked updated")
   });
 }
 

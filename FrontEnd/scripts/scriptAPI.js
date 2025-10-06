@@ -9,7 +9,7 @@
 async function fetchWorks(){
     const responseWorks = await fetch("http://localhost:5678/api/works");
     const works = await responseWorks.json();
-    console.log("works updated:");
+    console.log("works fetched from API:");
     console.log(works);
     return works;
 }
@@ -21,7 +21,7 @@ async function fetchWorks(){
 async function fetchCategories(){
     const responseCategories = await fetch("http://localhost:5678/api/categories");
     const categories = await responseCategories.json()
-    console.log("categories updated:");
+    console.log("categories fetched from API:");
     console.log(categories);
     return categories;
 }
