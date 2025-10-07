@@ -32,10 +32,10 @@ async function fetchCategories(){
 }
 
 /**
- * This function make a DELETE request to the API and delete work of work_id from API
+ * This function make a DELETE request to the API and delete work of workId from API
  **************************************/
-async function deleteWork(work_id){
-    fetch(`${apiUrl}works/${work_id}`, {
+async function deleteWork(workId){
+    fetch(`${apiUrl}works/${workId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

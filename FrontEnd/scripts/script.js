@@ -92,12 +92,12 @@ function activateFilterButton(){
     //use the dataset.id to know which button is clicked and call the function
     for(let i=0; i<filterButtonsElement.length; i++){
         filterButtonsElement[i].addEventListener("click", (event)=>{
-            const cat_id = filterButtonsElement[i].dataset.id;
+            const catId = filterButtonsElement[i].dataset.id;
             //const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
-            if(cat_id==0){
+            if(catId==0){
                 diplayGallery(works);
             } else {
-                const filteredWorks = works.filter(work => {return work.categoryId == cat_id;});
+                const filteredWorks = works.filter(work => {return work.categoryId == catId;});
                 diplayGallery(filteredWorks);
             }
         })
@@ -155,12 +155,12 @@ async function updateStoredWorks(){
  * remove a single work which id is passed in parameter from the local storage
  * @param {Int} workId: id of the work to be removed
  */
-function removeWorkFromLocalStorage(work_id){
+function removeWorkFromLocalStorage(workId){
     const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
-    const filteredWorks = storedWorks.filter(work => !(work.id == work_id));
+    const filteredWorks = storedWorks.filter(work => !(work.id == workId));
     window.localStorage.removeItem("storedWorks");
     window.localStorage.setItem("storedWorks",JSON.stringify(filteredWorks));
-    console.log(`work id : ${work_id} has been removed from local storage`);
+    console.log(`work id : ${workId} has been removed from local storage`);
 }
 
 
