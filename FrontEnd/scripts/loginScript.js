@@ -48,7 +48,7 @@ async function login(email, password) {
     const data = await response.json();
     // "data" contains the token if login succeeded
     errorMessage.classList.add("hidden");
-    window.localStorage.setItem("userToken", data.token);
+    window.sessionStorage.setItem("userToken", data.token);
     updateNavLinks();
     window.location.href = 'index.html';
   }
@@ -58,7 +58,7 @@ async function login(email, password) {
  * @returns {boolean} : true if logged in, flase if not
  **************************************/
 function userLoggedIn(){
-  if (!window.localStorage.getItem("userToken")){
+  if (!window.sessionStorage.getItem("userToken")){
       return false;
   } else {
       return true;
@@ -75,7 +75,7 @@ function updateNavLinks(){
     if(userLoggedIn()){
       link.innerText = "Logout";
       console.log("Logged-in");
-      console.log(window.localStorage.getItem("userToken"));
+      console.log(window.sessionStorage.getItem("userToken"));
     } else {
       console.log("Not Logged-in");
       link.innerText = "login";

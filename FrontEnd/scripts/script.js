@@ -53,7 +53,7 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
         const logoutNavLink = document.querySelector(".loginLink");
         logoutNavLink.addEventListener("click", ()=>{
             // if user click on "logout" the token is removed from local storage
-            window.localStorage.removeItem("userToken");
+            window.sessionStorage.removeItem("userToken");
             updateNavLinks();
         })
     }
