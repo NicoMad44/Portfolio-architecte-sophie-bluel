@@ -51,6 +51,7 @@ async function closeModale(){
         hiddePreview();
         clearFormInput();
         removeErrorMessage();
+        disableSubmition();
     // update main gallery page
         //await updateStoredWorks();
         updateBothGallery();
@@ -355,6 +356,15 @@ function allowSubmition(){
     const sendPhotoButton = document.querySelector(".sendImgButton");
         sendPhotoButton.disabled = false;
 }
+
+/**
+ * to disable the form button to submit image
+ */
+function disableSubmition(){
+    const sendPhotoButton = document.querySelector(".sendImgButton");
+        sendPhotoButton.disabled = true;
+}
+
 
 /** 
  * This function empty the title field fo the form 

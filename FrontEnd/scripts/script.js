@@ -93,11 +93,11 @@ function activateFilterButton(){
     for(let i=0; i<filterButtonsElement.length; i++){
         filterButtonsElement[i].addEventListener("click", (event)=>{
             const catId = filterButtonsElement[i].dataset.id;
-            //const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
+            const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
             if(catId==0){
-                diplayGallery(works);
+                diplayGallery(storedWorks);
             } else {
-                const filteredWorks = works.filter(work => {return work.categoryId == catId;});
+                const filteredWorks = storedWorks.filter(work => {return work.categoryId == catId;});
                 diplayGallery(filteredWorks);
             }
         })
