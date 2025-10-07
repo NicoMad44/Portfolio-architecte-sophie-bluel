@@ -1,5 +1,5 @@
-import { updateBothGallery, activateFilterButton, updateStoredWorks, removeWorkFromLocalStorage } from "./script.js";
-import {fetchCategories, deleteWork, sendImg} from "./scriptAPI.js";
+import { updateBothGallery, removeWorkFromLocalStorage } from "./script.js";
+import { deleteWork, sendImg } from "./scriptAPI.js";
 
 
 /*************************
@@ -14,7 +14,7 @@ activatePhotoDeleteButtonIcon();
 // add event listner on the select photo button of the form
 activateNewPhotoForm()
 
-// add event listner on the modale Bak Ground to close when we click on it
+// add event listner on the modale BackGround to close when we click on it
 clickOutToClose();
 
 /***************************
@@ -32,7 +32,6 @@ function openModale(){
     const darkBackGroundElement = document.querySelector("aside.modaleBG");
     darkBackGroundElement.classList.remove("hidden");
     diplayModaleGalleryScreen();
-
 }
 
 /**
@@ -134,15 +133,6 @@ function displayModaleGallery(works){
 }
 
 /**
- * to fetch the data from API and update the Modale gallery by redisplaying it  
- ************************************************************************/
-async function updateModaleGallery(){
-    const updatedWorks = await fetchWorks();
-    //diplayGallery(updatedWorks);
-    displayModaleGallery(updatedWorks);
-}
-
-/**
  * calling this function will hide the add photo screen and display the modal gallery screen
  *  **************************************/
 function diplayModaleGalleryScreen(){
@@ -165,7 +155,7 @@ function diplayModaleGalleryScreen(){
 
 /**
  * to add eventlisnter on all the bin Icon of the modal galery screen
- * when cliked: the work is deleted and the img is removed form screen
+ * when cliked: the work is deleted form API and local storage and the img is removed form modale gallery screen
  **************************************/
 function activatePhotoDeleteButtonIcon(){
     const binIconElements = document.querySelectorAll(".binIcon");
@@ -226,9 +216,9 @@ async function makeCategoryMenu(categories){
 
 /**
  * function to add events listeners on the form:
- * one on the slect new photo button
- * one on the title field of the form
- * one on the submit button on the form
+ * one on the select new photo button => to trigger the file selection window
+ * one on the title field of the form => to trigger the validation of the form content
+ * one on the submit button on the form => to actually trigger the removal of the work
  */
 function activateNewPhotoForm(){
     // add event listner on the select a photo button
@@ -265,24 +255,24 @@ function activateNewPhotoForm(){
         event.preventDefault();
         const formData = await createPostData();
         await sendImg(formData);
-        //await updateStoredWorks();
-        //closeModale(); 
     });
 }
 
 /**
  * to check that the file selected is following the rules:
- * i.e. png or jpeg and size< 4mo
+ * i.e.  size< 4mo 
+ * n.b. the type of file allowed to be selected is restricted in the html element (only png et jpeg can be selected)
  * @param {file}: file to verify
  * @returns {boolean}: true if respect rule
  */
 function verifiedPhoto(file){
-    if(file.size<=4000000 && ((file.type === "image/png") || (file.type === "image/jpeg"))){
+    removeErrorMessage();
+    if(file.size<=4000000){
+        console.log("Photo validated: ")
         console.log(file);
-        console.log("Photo validated")
         return true
     }
-    console.log("file is too large or not the right format")
+    console.log("file is too large or not of the right format")
     return false
 }
 
@@ -290,7 +280,7 @@ function verifiedPhoto(file){
  * to display an error message when the selected file is not respecting constraint
  */
 function displayErrorMessage(file){
-    const errorMessage = `The image ${file.name} is too large, please choose select an image less than 4Mo`
+    const errorMessage = `The image ${file.name} is too large, please select an image less than 4Mo in size`
     const errorMessageElement = document.createElement("p");
     errorMessageElement.classList.add("errorMessage");
     errorMessageElement.innerText = errorMessage;

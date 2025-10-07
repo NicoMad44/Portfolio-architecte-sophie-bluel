@@ -19,7 +19,6 @@ async function fetchWorks(){
     return works;
 }
 
-
 /**
  * to fetch the categories from the API
  * @return {array} categories: return an array with all the categories  
@@ -32,7 +31,7 @@ async function fetchCategories(){
     return categories;
 }
 
-/********function deleteWork()
+/**
  * This function make a DELETE request to the API and delete work of work_id from API
  **************************************/
 async function deleteWork(work_id){
@@ -55,7 +54,9 @@ async function deleteWork(work_id){
 }
 
 /** 
- * This function send a POST request to the API and upload the info contains in the formData
+ * This function send a POST request to the API and upload the info contains in the formData to add the work
+ * it also update the local storage once the work is uploaded by updating the local storage from the API
+ * finally it closes the modale -> triggering the update of the gallery screen to reflect the new elements added
  *****************************************************************************/
 async function sendImg(formData){
     fetch(`${apiUrl}works`, {

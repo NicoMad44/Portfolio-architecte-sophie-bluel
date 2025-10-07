@@ -14,30 +14,18 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
     // fetch info from API & store them in Local Storage
 
     let works = await fetchWorks();
-    console.log(works);
-    /* works = works.filter(function(work){
-        return !(work.id == 77);
-    })
-    console.log(works);
-    const localWorks = new Map();
-    works.forEach(work => {
-        localWorks.set(work.id,work);
-    });
-    console.log("********End test*********"); */
     window.localStorage.setItem("storedWorks", JSON.stringify(works));
+    
     const categories = await fetchCategories();
-    console.log(categories);
     window.localStorage.setItem("storedCategories", JSON.stringify(categories));
 
     // display the Main gallery
-    //let storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
     diplayGallery(works);
 
     // create the element for the modale gallery
     displayModaleGallery(works);
 
     // Build the category menu for the modale
-    //let storedCategories = JSON.parse(window.localStorage.getItem("storedCategories"));
     makeCategoryMenu(categories);
 
     // Build, display and activate the filter buttons
@@ -61,7 +49,7 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
         // display editButton
         const editButton = document.querySelector(".editButton");
         editButton.classList.remove("hidden");
-        updateNavLinks();
+        updateNavLinks(); //=> this is to ensure the link in navigation bar change to "logout" once loged-ing
         const logoutNavLink = document.querySelector(".loginLink");
         logoutNavLink.addEventListener("click", ()=>{
             // if user click on "logout" the token is removed from local storage
@@ -70,41 +58,14 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
         })
     }
 
-    console.log("index Page loaded");
+    console.log("index Page ready");
 
 /*******************************
  * Overall Main Page FUNCTIONS
  * *****************************/
 
 /**
- * NOT IN USE - this function extract and dedup the category from the API works info and build the category filter button
- * @param {array} works 
- */
-async function buildCategoryFilterFromWorks(){
-    const works = await fetchWorks();
-    const categoriesInWorks = new Map();
-    categoriesInWorks.set(0,"Tous"); // I add a 0 value for the "tous" option
-    //loop to go througth all the works and add the category to the Map only if id not already contains in Map
-    for (let i =0; i<works.length; i++){
-        if(!categoriesInWorks.has(works[i].category.id)){
-            categoriesInWorks.set(works[i].category.id, works[i].category.name);  
-        }
-    }
-    console.log(`category from Works deduplicated:`)
-    console.log(categoriesInWorks);
-    const filterZone = document.querySelector(".filterZone");
-    filterZone.innerHTML="";
-    for (const [key, value] of categoriesInWorks){
-        const filterButton = document.createElement("button");
-        filterButton.innerText = value;
-        filterButton.dataset.id = key;
-        filterZone.appendChild(filterButton);
-    } 
-    console.log("filter updated")
-}
-
-/**
- * this function take the category from the api category info
+ * this function dynamically build the filter button based on categories passed as parameter
  * @param {array} categories 
  */
 function buildCategoryFilterFromCategories(categories){
@@ -136,9 +97,7 @@ function activateFilterButton(){
             if(cat_id==0){
                 diplayGallery(works);
             } else {
-                const filteredWorks = works.filter(function(work){
-                    return work.categoryId == cat_id;
-                })
+                const filteredWorks = works.filter(work => {return work.categoryId == cat_id;});
                 diplayGallery(filteredWorks);
             }
         })
@@ -180,9 +139,8 @@ function updateBothGallery(){
     displayModaleGallery(updatedWorks);
 }
 
-
 /**
- * works on the local storage by fetching the info from the API and replacing the current local storage
+ * update works on the local storage by fetching the info from the API and replacing the info
  * @param {array of work} works
  * @param {Int} workId: id of the work to be removed or added
  */
@@ -193,6 +151,10 @@ async function updateStoredWorks(){
     console.log("local Storage updated")
 }
 
+/**
+ * remove a single work which id is passed in parameter from the local storage
+ * @param {Int} workId: id of the work to be removed
+ */
 function removeWorkFromLocalStorage(work_id){
     const storedWorks = JSON.parse(window.localStorage.getItem("storedWorks"));
     const filteredWorks = storedWorks.filter(work => !(work.id == work_id));
@@ -203,3 +165,33 @@ function removeWorkFromLocalStorage(work_id){
 
 
 export{updateBothGallery, activateFilterButton, updateStoredWorks, removeWorkFromLocalStorage};
+
+
+
+
+/**
+ * NOT IN USE - this function extract and dedup the category from the API works info and build the category filter button
+ * @param {array} works 
+ */
+async function buildCategoryFilterFromWorks(){
+    const works = await fetchWorks();
+    const categoriesInWorks = new Map();
+    categoriesInWorks.set(0,"Tous"); // I add a 0 value for the "tous" option
+    //loop to go througth all the works and add the category to the Map only if id not already contains in Map
+    for (let i =0; i<works.length; i++){
+        if(!categoriesInWorks.has(works[i].category.id)){
+            categoriesInWorks.set(works[i].category.id, works[i].category.name);  
+        }
+    }
+    console.log(`category from Works deduplicated:`)
+    console.log(categoriesInWorks);
+    const filterZone = document.querySelector(".filterZone");
+    filterZone.innerHTML="";
+    for (const [key, value] of categoriesInWorks){
+        const filterButton = document.createElement("button");
+        filterButton.innerText = value;
+        filterButton.dataset.id = key;
+        filterZone.appendChild(filterButton);
+    } 
+    console.log("filter updated")
+}
