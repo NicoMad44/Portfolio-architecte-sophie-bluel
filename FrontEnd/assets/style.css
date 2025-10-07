@@ -58,7 +58,7 @@ table {
 
 
 body {
-	max-width: 1140px;
+	width:100%;
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
@@ -73,11 +73,22 @@ main{
 	flex:1;
 }
 
-header {
+.container{
+	max-width: 1140px;
 	display: flex;
-	justify-content: space-between;
-	margin: 50px 0
+	flex-direction: column;
+	align-items: center;
+	margin: auto;
+	width:100%;
 }
+
+.headerContainer{
+	flex-direction: row;
+	justify-content: space-between;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
 section {
 	margin: 100px 0
 }
@@ -298,6 +309,7 @@ input[type="submit"]{
 
 footer{
 	background-color: white;
+	max-width: 100%;
 }
 
 footer nav ul {

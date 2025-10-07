@@ -25,3 +25,7 @@
 #login .hidden{
     display:none;
 }
+
+.headerContainer{
+	margin-bottom: 150px;
+}

@@ -1,6 +1,8 @@
 import { updateStoredWorks } from "./script.js";   
 import {closeModale} from "./scriptModale.js";
 
+const apiUrl = "http://localhost:5678/api/"
+
 /********************************************
  * Functions used to fetch data from the API
  * ******************************************/
@@ -10,7 +12,7 @@ import {closeModale} from "./scriptModale.js";
  * @return {array} works: return an array with all the works  
  **************************************/
 async function fetchWorks(){
-    const responseWorks = await fetch("http://localhost:5678/api/works");
+    const responseWorks = await fetch(`${apiUrl}works`);
     const works = await responseWorks.json();
     console.log("works fetched from API:");
     console.log(works);
@@ -23,7 +25,7 @@ async function fetchWorks(){
  * @return {array} categories: return an array with all the categories  
  **************************************/
 async function fetchCategories(){
-    const responseCategories = await fetch("http://localhost:5678/api/categories");
+    const responseCategories = await fetch(`${apiUrl}categories`);
     const categories = await responseCategories.json()
     console.log("categories fetched from API:");
     console.log(categories);
@@ -34,7 +36,7 @@ async function fetchCategories(){
  * This function make a DELETE request to the API and delete work of work_id from API
  **************************************/
 async function deleteWork(work_id){
-    fetch(`http://localhost:5678/api/works/${work_id}`, {
+    fetch(`${apiUrl}works/${work_id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -56,7 +58,7 @@ async function deleteWork(work_id){
  * This function send a POST request to the API and upload the info contains in the formData
  *****************************************************************************/
 async function sendImg(formData){
-    fetch(`http://localhost:5678/api/works`, {
+    fetch(`${apiUrl}works`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${window.localStorage.getItem("userToken")}`
