@@ -247,7 +247,10 @@ function activateNewPhotoForm(){
 
         if(titleInput.value != "" && !imgPreviewElement.classList.contains("hidden")) {// if NOT hidden, it means we have an eligible photo ready
             allowSubmition();
-        } 
+        } else {
+            disableSubmition();
+        }
+
     })
 
     // add event listner on the new photo form to send picture when submited
