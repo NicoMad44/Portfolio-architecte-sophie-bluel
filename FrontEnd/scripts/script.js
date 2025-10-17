@@ -13,7 +13,7 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
     
     // fetch info from API & store them in Local Storage
 
-    let works = await fetchWorks();
+    const works = await fetchWorks();
     window.localStorage.setItem("storedWorks", JSON.stringify(works));
     
     const categories = await fetchCategories();

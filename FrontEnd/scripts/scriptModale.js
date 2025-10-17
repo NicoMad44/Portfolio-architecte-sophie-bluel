@@ -203,7 +203,7 @@ function displayModaleNewPhotoScreen(){
  * This function populate the drop down menu category of the modale,
  * @param {array} categories: categorie to display in the drop down menu
  **************************************/
-async function makeCategoryMenu(categories){
+function makeCategoryMenu(categories){
     const dropDownMenu = document.getElementById("category");
     for( let i=0; i<categories.length ; i++){
         const option = document.createElement("option");
@@ -257,7 +257,7 @@ function activateNewPhotoForm(){
     const newPhotoFormElement = document.querySelector(".modale-newPhotoForm");
     newPhotoFormElement.addEventListener("submit", async (event)=>{
         event.preventDefault();
-        const formData = await createPostData();
+        const formData = createPostData();
         await sendImg(formData);
     });
 }
@@ -339,7 +339,7 @@ function generateImgURL(file){
  * This function get the info from the form and format it in a formData Object that it returns
  * @return {formData} formData :info from the form 
  *****************************************************************************/
-async function createPostData(){ 
+function createPostData(){ 
     const newPhotoForm = document.querySelector(".modale-newPhotoForm");
     const formData = new FormData(newPhotoForm);
     const categoryName = formData.get("category");
