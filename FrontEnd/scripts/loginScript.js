@@ -50,7 +50,7 @@ async function login(email, password) {
     errorMessage.classList.add("hidden");
     window.sessionStorage.setItem("userToken", data.token);
     updateNavLinks();
-    window.location.href = 'index.html';
+    window.location.href = 'https://nicomad44.github.io/Portfolio-architecte-sophie-bluel/';
   }
 
 /**
