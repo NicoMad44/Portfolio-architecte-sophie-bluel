@@ -114,12 +114,12 @@ function displayModaleGallery(works){
         imgCard.classList.add("imgCard");
 
         const imgElement = document.createElement("img");
-        imgElement.src = works[i].imageUrl;
+        imgElement.src = getImageUrlFromApi(works[i]);;
         imgElement.alt = works[i].title;
         imgElement.classList.add("imgPhoto");
 
         const binIconElement = document.createElement("img");
-        binIconElement.src = "./assets/icons/binIcon.png";
+        binIconElement.src = "FrontEnd/assets/icons/editIcon.png";
         binIconElement.alt = "icon showing a bin - press to remove picture";
         binIconElement.dataset.id = works[i].id;
         binIconElement.classList.add("binIcon");
