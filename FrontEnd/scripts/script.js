@@ -2,7 +2,7 @@ import { userLoggedIn, updateNavLinks } from "./loginScript.js";
 import { fetchCategories, fetchWorks } from "./scriptAPI.js";
 import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModale.js";
 
-const API_BASE_URL = "https://sophie-bluel-backend.onrender.com";
+const API_BASE_URL = "https://portfolio-architecte-sophie-bluel-6fu2.onrender.com";
 
 /****************************
  * Overall Main Page Script
