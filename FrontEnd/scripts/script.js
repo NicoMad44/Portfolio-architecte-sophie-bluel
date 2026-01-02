@@ -181,7 +181,7 @@ function removeWorkFromLocalStorage(workId){
 }
 
 
-export{updateBothGallery, activateFilterButton, updateStoredWorks, removeWorkFromLocalStorage};
+export{updateBothGallery, activateFilterButton, updateStoredWorks, removeWorkFromLocalStorage, getImageUrlFromApi};
 
 
 
