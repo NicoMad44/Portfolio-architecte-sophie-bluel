@@ -30,7 +30,7 @@ form.addEventListener("submit", (event)=>{
  * @param {string} password : the password entered by the user
  */
 async function login(email, password) {
-    const response = await fetch('http://localhost:5678/api/users/login', {
+    const response = await fetch('https://portfolio-architecte-sophie-bluel-6fu2.onrender.com/api/users/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
