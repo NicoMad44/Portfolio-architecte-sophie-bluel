@@ -2,6 +2,7 @@ import { userLoggedIn, updateNavLinks } from "./loginScript.js";
 import { fetchCategories, fetchWorks } from "./scriptAPI.js";
 import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModale.js";
 
+const API_BASE_URL = "https://sophie-bluel-backend.onrender.com";
 
 /****************************
  * Overall Main Page Script
@@ -64,7 +65,7 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
  * Overall Main Page FUNCTIONS
  * *****************************/
 
-const API_BASE_URL = "https://sophie-bluel-backend.onrender.com";
+
 
 function getImageUrlFromApi(work) {
   try {
