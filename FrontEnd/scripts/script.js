@@ -64,6 +64,22 @@ import { displayModaleGallery, openModale, makeCategoryMenu } from "./scriptModa
  * Overall Main Page FUNCTIONS
  * *****************************/
 
+const API_BASE_URL = "https://sophie-bluel-backend.onrender.com";
+
+function getImageUrlFromApi(work) {
+  try {
+    const url = new URL(work.imageUrl);
+    const imagePath = url.pathname; // "/images/xxx.png"
+    return API_BASE_URL + imagePath; // "https://.../images/xxx.png"
+  } catch (e) {
+    // fallback si jamais imageUrl n'est pas une URL complète
+    return API_BASE_URL + "/images/" + work.imageUrl;
+  }
+}
+
+
+
+
 /**
  * this function dynamically build the filter button based on categories passed as parameter
  * @param {array} categories 
@@ -116,7 +132,7 @@ function diplayGallery(works){
         const figureElement = document.createElement("figure");
     
         const imgElement = document.createElement("img");
-        imgElement.src = works[i].imageUrl;
+        imgElement.src = getImageUrlFromApi(works[i]);
         imgElement.alt = works[i].title;
     
         const figureCaptionElement = document.createElement("figcaption");
