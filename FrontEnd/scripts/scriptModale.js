@@ -1,4 +1,4 @@
-import { updateBothGallery, removeWorkFromLocalStorage } from "./script.js";
+import { updateBothGallery, removeWorkFromLocalStorage, getImageUrlFromApi } from "./script.js";
 import { deleteWork, sendImg } from "./scriptAPI.js";
 
 
