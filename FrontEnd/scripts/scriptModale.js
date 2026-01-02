@@ -119,7 +119,7 @@ function displayModaleGallery(works){
         imgElement.classList.add("imgPhoto");
 
         const binIconElement = document.createElement("img");
-        binIconElement.src = "../assets/icons/binIcon.png";
+        binIconElement.src = ".FrontEnd/assets/icons/binIcon.png";
         binIconElement.alt = "icon showing a bin - press to remove picture";
         binIconElement.dataset.id = works[i].id;
         binIconElement.classList.add("binIcon");
