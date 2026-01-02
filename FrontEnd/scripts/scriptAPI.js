@@ -1,7 +1,7 @@
 import { updateStoredWorks } from "./script.js";   
 import {closeModale} from "./scriptModale.js";
 
-const apiUrl = "http://localhost:5678/api/"
+const apiUrl = "https://portfolio-architecte-sophie-bluel-6fu2.onrender.com/api/"
 
 /********************************************
  * Functions used to fetch data from the API
